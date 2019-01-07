@@ -8,19 +8,10 @@ use Doctrine\ORM\Mapping as ORM;
  * Planning
  *
  * @ORM\Table(name="planning")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\PlanningRepository")
  */
 class Planning
 {
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="departure", type="date", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
-     */
-    private $departure;
-
     /**
      * @var int
      *
@@ -45,20 +36,12 @@ class Planning
      * @ORM\Column(name="idL", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="NONE")
+     * @ORM\ManyToOne(targetEntity="Lesson")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="idl", referencedColumnName="idl")
+     * })
      */
     private $idl;
-
-    /**
-     * @var \DateTime|null
-     *
-     * @ORM\Column(name="end", type="date", nullable=true)
-     */
-    private $end;
-
-    public function getDeparture(): ?\DateTimeInterface
-    {
-        return $this->departure;
-    }
 
     public function getIdc(): ?int
     {
@@ -75,17 +58,24 @@ class Planning
         return $this->idl;
     }
 
-    public function getEnd(): ?\DateTimeInterface
+    public function setIdc(int $idc): self
     {
-        return $this->end;
-    }
-
-    public function setEnd(?\DateTimeInterface $end): self
-    {
-        $this->end = $end;
-
+        $this->idc=$idc;
         return $this;
     }
+
+    public function setIdi(int $idi): self
+    {
+        $this->idi=$idi;
+        return $this;
+    }
+
+    public function setIdl(int $idl): self
+    {
+        $this->idl=$idl;
+        return $this;
+    }
+
 
 
 }

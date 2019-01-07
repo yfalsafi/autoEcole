@@ -8,32 +8,31 @@ use Doctrine\ORM\Mapping as ORM;
  * Candidate
  *
  * @ORM\Table(name="candidate")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\CandidateRepository")
  */
 class Candidate
 {
     /**
      * @var int
      *
-     * @ORM\Column(name="idCandidate", type="integer", nullable=false)
+     * @ORM\Column(name="id_candidate", type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $idcandidate;
+    private $idCandidate;
 
     /**
      * @var string|null
      *
-     * @ORM\Column(name="nameC", type="string", length=50, nullable=true)
+     * @ORM\Column(name="surname", type="string", length=50, nullable=true)
      */
-    private $namec;
+    private $surname;
 
     /**
      * @var string|null
      *
-     * @ORM\Column(name="surnameC", type="string", length=50, nullable=true)
+     * @ORM\Column(name="firstname", type="string", length=50, nullable=true)
      */
-    private $surnamec;
+    private $firstname;
 
     /**
      * @var string|null
@@ -50,37 +49,58 @@ class Candidate
     private $city;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="status", type="string", length=50, nullable=false)
+     */
+    private $status;
+
+    /**
      * @var \DateTime|null
      *
-     * @ORM\Column(name="registrationDate", type="date", nullable=true)
+     * @ORM\Column(name="registration_date", type="datetime", nullable=true)
      */
-    private $registrationdate;
+    private $registrationDate;
 
-    public function getIdcandidate(): ?int
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="idi", type="integer", nullable=false)
+     */
+    private $idi;
+
+
+    public function getIdCandidate(): ?int
     {
-        return $this->idcandidate;
+        return $this->idCandidate;
     }
 
-    public function getNamec(): ?string
+    public function setIdCandidate(?int $idCandidate): self
     {
-        return $this->namec;
+        $this->idCandidate= $idCandidate;
+        return $this;
     }
 
-    public function setNamec(?string $namec): self
+    public function getSurname(): ?string
     {
-        $this->namec = $namec;
+        return $this->surname;
+    }
+
+    public function setSurname(?string $surname): self
+    {
+        $this->surname = $surname;
 
         return $this;
     }
 
-    public function getSurnamec(): ?string
+    public function getFirstname(): ?string
     {
-        return $this->surnamec;
+        return $this->firstname;
     }
 
-    public function setSurnamec(?string $surnamec): self
+    public function setFirstname(?string $firstname): self
     {
-        $this->surnamec = $surnamec;
+        $this->firstname = $firstname;
 
         return $this;
     }
@@ -109,17 +129,57 @@ class Candidate
         return $this;
     }
 
-    public function getRegistrationdate(): ?\DateTimeInterface
+    public function getStatus(): ?string
     {
-        return $this->registrationdate;
+        return $this->status;
     }
 
-    public function setRegistrationdate(?\DateTimeInterface $registrationdate): self
+    public function setStatus(?string $status): self
     {
-        $this->registrationdate = $registrationdate;
+        $this->status = $status;
 
         return $this;
     }
+
+    public function getRegistrationDate(): ?\DateTimeInterface
+    {
+        return $this->registrationDate;
+    }
+
+    public function setRegistrationDate(?\DateTimeInterface $registrationDate): self
+    {
+        $this->registrationDate = $registrationDate;
+
+        return $this;
+    }
+
+    public function getIdi(): ?int
+    {
+        return $this->idi;
+    }
+
+    public function setIdl(?int $idi): self
+    {
+        $this->idi= $idi;
+        return $this;
+    }
+
+    public function eraseCredentials()
+    {
+        // TODO: Implement eraseCredentials() method.
+    }
+
+    public function getSalt()
+    {
+        // TODO: Implement getSalt() method.
+    }
+
+    public function getRoles()
+    {
+        // TODO: Implement getRoles() method.
+        return ['ROLE_USER'];
+    }
+
 
 
 }

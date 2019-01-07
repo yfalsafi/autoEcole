@@ -15,11 +15,11 @@ class Car
     /**
      * @var int
      *
-     * @ORM\Column(name="idCar", type="integer", nullable=false)
+     * @ORM\Column(name="id_car", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="NONE")
      */
-    private $idcar;
+    private $idCar;
 
     /**
      * @var int
@@ -44,9 +44,9 @@ class Car
      */
     private $km;
 
-    public function getIdcar(): ?int
+    public function getIdCar(): ?int
     {
-        return $this->idcar;
+        return $this->idCar;
     }
 
     public function getIdi(): ?int

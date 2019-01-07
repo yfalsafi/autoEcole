@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <section id="services">
+            <h1>Registration</h1>
+
+            {{ form_start(form) }}
+            {{ form_row(form.mail, { 'label': 'Mail',  'attr': {
+                'placeholder': 'Mail','class':'form-control'}}) }}
+            {{ form_row(form.password , { 'label': 'Password', 'attr': {
+                'class':'form-control',
+                'placeholder': 'Password'}}) }}
+            {{ form_row(form.confirm_password, { 'label': 'Confirm Password', 'attr': {
+                'class':'form-control',
+                'placeholder': 'Confirm Password'}}) }}
+            <br/>
+            <button type="submit"class="btn btn-primary">Registration</button>
+            {{ form_end(form) }}
+        </section>
+    </div>
+
+
+{% endblock %}

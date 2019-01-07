@@ -15,11 +15,11 @@ class Instructor
     /**
      * @var int
      *
-     * @ORM\Column(name="idInstructor", type="integer", nullable=false)
+     * @ORM\Column(name="id_instructor", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $idinstructor;
+    private $idInstructor;
 
     /**
      * @var string|null
@@ -56,9 +56,9 @@ class Instructor
      */
     private $hiringdate;
 
-    public function getIdinstructor(): ?int
+    public function getIdInstructor(): ?int
     {
-        return $this->idinstructor;
+        return $this->idInstructor;
     }
 
     public function getNamei(): ?string

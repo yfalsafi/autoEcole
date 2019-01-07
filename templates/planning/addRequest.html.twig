@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% if editMode %}Edit Lesson {% else %}New Lesson{% endif %}{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <section id="services">
+            <h1>{% if editMode %}Edit Lesson {% else %}New Lesson{% endif %}</h1>
+            {% for error in errors %}
+                <div class="alert alert-danger">
+                    {{ error }}
+                </div>
+            {% endfor %}
+            {{ form_start(form) }}
+            {{ form_row(form.startAt, { 'label': 'Start',  'attr': {
+                'class':'input-group date'}}) }}
+            {{ form_row(form.endAt , { 'label': 'End', 'attr': {
+                'class':'input-group date'}}) }}
+            <br/>
+            <button type="submit" class="btn btn-primary">Add</button>
+            {% if editMode %}
+                <a href="{{ path('deleteLesson',{'id':lesson.idL}) }}" class="btn btn-danger">Delete</a>
+            {% endif %}
+            {{ form_end(form) }}
+        </section>
+    </div>
+
+
+{% endblock %}

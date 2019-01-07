@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <section id="services">
+            <h1>Registration</h1>
+
+            {{ form_start(form) }}
+            {{ form_row(form.surname, { 'label': 'Surname',  'attr': {
+                'placeholder': 'Surname','class':'form-control'}}) }}
+            {{ form_row(form.firstname , { 'label': 'Firstname', 'attr': {
+                'class':'form-control',
+                'placeholder': 'Firstname'}}) }}
+            {{ form_row(form.adress, { 'label': 'Adress', 'attr': {
+                'class':'form-control',
+                'placeholder': 'Adress'}}) }}
+            {{ form_row(form.city, { 'label': 'City', 'attr': {
+                'class':'form-control',
+                'placeholder': 'City'}}) }}
+            <br/>
+            <button type="submit" class="btn btn-primary">Registration</button>
+            {{ form_end(form) }}
+        </section>
+    </div>
+
+
+{% endblock %}
