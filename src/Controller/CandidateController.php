@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Candidate;
+use App\Entity\Instructor;
+use App\Entity\Planning;
 use App\Entity\Users;
 use App\Repository\CandidateRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -77,16 +79,33 @@ class CandidateController extends AbstractController
      * @Route("/exo/{id}", name="exo")
      */
     public function exo($id){
+        $nbHoursCandidate= array();
+        $nbHoursInstructor= array();
+        $repo=$this->getDoctrine()->getRepository(Candidate::class);
         for($month=1;$month<=12;$month++){
             $start=date($id.'-'.$month.'-01');
             $end=date($id.'-'.$month.'-31');
-            $repo=$this->getDoctrine()->getRepository(Candidate::class);
             $results[$month]=$repo->findAllByYear($start,$end);
         }
-        dump($results);
+        $rep = $this->getDoctrine()->getRepository(Planning::class);
+        $repI = $this->getDoctrine()->getRepository(Instructor::class);
+        $candidate= $repo->findAll();
+        $instructor= $repI->findAll();
+        for($i=0;$i<sizeof($candidate);$i++){
+            $nbHoursCandidate[$i] = $rep->findNbLessonByUser($candidate[$i]->getIdCandidate(),new \DateTime());
+        }
+        for($i=0;$i<sizeof($instructor);$i++){
+            $nbHoursInstructor[$i] = $rep->findNbLessonByInstructor($instructor[$i]->getIdInstructor(),new \DateTime());
+        }
+        dump($nbHoursInstructor);
         return $this->render('exo/index.html.twig', [
             'results'=>$results,
-            'months'=>$month
+            'months'=>$this->months,
+            'id'=>$id,
+            'candidates'=>$candidate,
+            'instructors'=>$instructor,
+            'nbHC'=>$nbHoursCandidate,
+            'nbHI'=>$nbHoursInstructor,
         ]);
     }
 

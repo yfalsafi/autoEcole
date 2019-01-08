@@ -35,6 +35,37 @@ class PlanningRepository extends ServiceEntityRepository
             ;
     }
 
+
+    public function findNbLessonByUser($user,$date)
+    {
+        return $this->createQueryBuilder('p')
+            ->select('count(p)')
+            ->join('App\Entity\Lesson', 'l')
+            ->Where('p.idl = l.idl')
+            ->andWhere('l.startAt < (:date)')
+            ->andWhere('p.idc = (:user)')
+            ->setParameter('user', $user)
+            ->setParameter('date', $date)
+            ->getQuery()
+            ->getSingleScalarResult()
+            ;
+    }
+
+    public function findNbLessonByInstructor($user,$date)
+    {
+        return $this->createQueryBuilder('p')
+            ->select('count(p)')
+            ->join('App\Entity\Lesson', 'l')
+            ->Where('p.idl = l.idl')
+            ->andWhere('l.startAt < (:date)')
+            ->andWhere('p.idi = (:user)')
+            ->setParameter('user', $user)
+            ->setParameter('date', $date)
+            ->getQuery()
+            ->getSingleScalarResult()
+            ;
+    }
+
     public function findOneByIdl($idl)
     {
         return $this->createQueryBuilder('p')

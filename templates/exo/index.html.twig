@@ -5,7 +5,32 @@
 {% block body %}
     <section>
         <div class="container">
-            
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <h1>Number of Registration by month </h1>
+                <div>
+                    <a href="{{ path('exo',{'id':id-1} ) }}" class="btn btn-primary">&lt;</a>
+                    <a href="{{ path('exo',{'id':id+1}) }}" class="btn btn-primary">&gt;</a>
+                </div>
+            </div>
+            {% for key, result in results %}
+                <div class="mt-4">
+                    {{ months[key-1] }} = {{ result[0][1] }}
+                </div>
+
+            {% endfor %}
+
+            <h1 class="mt-4">Candidate's hours done</h1>
+            {% for k, candidate in candidates %}
+                <div class="mt-4">
+                    {{ candidate.surname }} = {{ nbHC[k] }}
+                </div>
+            {% endfor %}
+            <h1 class="mt-4">Instructor's hours done</h1>
+            {% for k, instructor in instructors %}
+                <div class="mt-4">
+                    {{ instructor.surnameI }} = {{ nbHI[k] }}
+                </div>
+            {% endfor %}
         </div>
     </section>
 
