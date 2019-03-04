@@ -5,8 +5,10 @@ namespace App\Controller;
 use App\Entity\Candidate;
 use App\Entity\Instructor;
 use App\Entity\Planning;
-use App\Entity\Users;
+use App\Entity\User;
 use App\Repository\CandidateRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Security;
 use Doctrine\ORM\EntityRepository;
@@ -14,7 +16,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\User\User;
 
 
 class CandidateController extends AbstractController
@@ -23,23 +24,16 @@ class CandidateController extends AbstractController
     private $months=['Janvier','Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Decémbre'];
 
     private $securityContext;
-    public function __construct(Security $securityContext)
-    {
-        $this->securityContext = $securityContext;
-    }
+
     /**
      * @Route("/", name="home")
      */
     public function index()
     {
         $repo= $this->getDoctrine()->getRepository(Candidate::class);
-        $users =new Users();
-        if($this->securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED'))
-        {
-            $user = $this->securityContext->getToken()->getUser();
-            $candidate=$repo->findOneByIdCandidate($user->getIdUser());
-            dump($candidate);
-        }
+        $user = $this->getUser();
+        //$candidate=$repo->findOneByIdCandidate($user->getId());
+            dump($this->getUser());
 
 
         return $this->render('candidate/index.html.twig', [
@@ -56,15 +50,6 @@ class CandidateController extends AbstractController
 //    }
 
 
-    /**
-     * @Route("/login", name="login")
-     */
-    public function login()
-    {
-        return $this->render('users/login.html.twig', [
-            'controller_name' => 'UsersController',
-        ]);
-    }
 
     /**
      * @Route("/signin", name="signin")
@@ -109,5 +94,40 @@ class CandidateController extends AbstractController
         ]);
     }
 
+
+    /**
+     * @Route("/candidate/instructor", name="set_instructor")
+     */
+    public function displayRequest(Request $request, EntityManagerInterface $manager)
+    {
+
+        $repo= $this->getDoctrine()->getRepository(User::class);
+        $instructor=$repo->findInstructor();
+        $form = $this->createFormBuilder($instructor)
+            ->add('name', EntityType::class, array(
+                'class' => User::class,
+                'query_builder' =>  function(EntityRepository $er) {
+                    return $er->createQueryBuilder('u')
+                        ->andWhere('u.isInstructor = true'); },
+                'choice_label' => 'name',
+            ))
+            ->getForm();
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid())
+        {
+            dump($form->getViewData()['name']);
+            /**
+             * @var User $user
+             */
+            $user= $this->getUser();
+            $user->setInstructor($form->getViewData()['name']);
+            $manager->persist($user);
+            $manager->flush();
+            return $this->redirectToRoute('planning');
+        }
+        return $this->render('candidate/setInstructor.html.twig', [
+            'form'=>$form->createView()
+        ]);
+    }
 
 }

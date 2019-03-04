@@ -25,17 +25,75 @@ class LessonRepository extends ServiceEntityRepository
      * @param $end
      * @return array
      */
-    public function findAllBetween($user, $start, $end ):array
+    public function findAllHourCandidateBetween($user, $start, $end ):array
     {
         return $this->createQueryBuilder('l')
             ->from('App\Entity\Planning', 'p')
-            ->andWhere('l.idl = p.idl')
+            ->andWhere('l.id = p.idl')
             ->andWhere('p.idc = (:user)')
             ->andWhere('l.startAt BETWEEN (:start) AND (:end)')
             ->addOrderBy('l.startAt')
             ->setParameter('user', $user)
             ->setParameter('start', $start)
             ->setParameter('end', $end)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+
+
+    /**
+     * @param $user
+     * @param $start
+     * @param $end
+     * @return array
+     */
+    public function findAllHourInstructorBetween($user, $start, $end ):array
+    {
+        return $this->createQueryBuilder('l')
+            ->from('App\Entity\Planning', 'p')
+            ->andWhere('l.id = p.idl')
+            ->andWhere('p.idi = (:user)')
+            ->andWhere('l.startAt BETWEEN (:start) AND (:end)')
+            ->addOrderBy('l.startAt')
+            ->setParameter('user', $user)
+            ->setParameter('start', $start)
+            ->setParameter('end', $end)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+
+    public function findByDateAndId($candidate,$instructor, $start, $end ):array
+    {
+        return $this->createQueryBuilder('l')
+            ->from('App\Entity\Planning', 'p')
+            ->andWhere('l.id = p.idl')
+            ->andWhere('p.idc = (:candidate)')
+            ->andWhere('p.idi = (:instructor)')
+            ->andWhere('l.endAt BETWEEN (:start) AND (:end)')
+            ->andWhere('l.status != \'D\'')
+            ->addOrderBy('l.startAt')
+            ->setParameter('candidate', $candidate)
+            ->setParameter('instructor', $instructor)
+            ->setParameter('start', $start)
+            ->setParameter('end', $end)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    public function findAllByInstructor($instructor,$date)
+    {
+        return $this->createQueryBuilder('l')
+            ->join('App\Entity\Planning', 'p')
+            ->Where('p.idl = l.id')
+            ->andWhere('l.startAt > (:start)')
+            ->andWhere('p.idi = (:user)')
+            ->setParameter('user', $instructor)
+            ->setParameter('start', $date)
             ->getQuery()
             ->getResult()
             ;

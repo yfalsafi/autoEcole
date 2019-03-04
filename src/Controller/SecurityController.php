@@ -2,99 +2,59 @@
 
 namespace App\Controller;
 
-use App\Entity\Candidate;
-use App\Entity\Users;
+use App\Entity\User;
 use App\Form\RegistrationType;
-use Doctrine\Common\Persistence\ObjectManager;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
+use FOS\UserBundle\Model\UserManagerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use FOS\UserBundle\Controller\RegistrationController as BaseController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
-class SecurityController extends AbstractController
+class SecurityController extends BaseController
 {
+
     /**
-     * @Route("/registration", name="registration")
+     * @Route("/register/candidate", name="registration_candidate")
+     * @Route("/register/instructor", name="registration_instructor")
+     * @param Request $request
+     * @param UserManagerInterface $userManager
+     * @param EventDispatcherInterface $dispatcher
+     * @param TokenStorageInterface $security
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function registration(Request $request, ObjectManager $manager,UserPasswordEncoderInterface $encoder)
+    public function registration(Request $request, UserManagerInterface $userManager, EventDispatcherInterface $dispatcher,TokenStorageInterface $security)
     {
-        $user = new Users();
+        /** @var User $user */
+        $user = $userManager->createUser();
         $form= $this->createForm(RegistrationType::class,$user);
-
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid())
         {
-            $hash=$encoder->encodePassword($user,$user->getPassword());
-            $user->setPassword($hash);
-            $manager->persist($user);
-            $manager->flush();
-
-            return $this->redirectToRoute('candidate_registration', ['id'=>$user->getIdUser()]);
+            if($request->get('_route') == "registration_instructor")
+            {
+                $user->setRoles(["ROLE_INSTRUCTOR"]);
+                $user->setIsInstructor(true);
+            }else{
+                $user->addRole("ROLE_CANDIDATE");
+                $user->setIsInstructor(false);
+            }
+            $user->setRegisterAt(new \DateTime());
+            $user->setEnabled(true);
+            $userManager->updateUser($user);
+            $token = new UsernamePasswordToken($user, $user->getPassword(), "main", $user->getRoles());
+            $security->setToken($token);
+            $event = new InteractiveLoginEvent($request, $token);
+            $dispatcher->dispatch("security.interactive_login", $event);
+            return $this->redirectToRoute('home');
         }
-        return $this->render('security/index.html.twig', [
+        return $this->render('bundles/FOSUserBundle/Registration/register.html.twig', [
             'form' =>$form->createView()
         ]);
     }
 
-
-    /**
-     * @Route("/registration/{id}", name="candidate_registration")
-     */
-    public function candidateRegistration(Request $request, ObjectManager $manager,UserPasswordEncoderInterface $encoder, Users $user)
-    {
-        $candidate = new Candidate();
-        $form= $this->createFormBuilder($candidate)
-                    ->add('surname')
-                    ->add('firstname')
-                    ->add('adress')
-                    ->add('city')
-                    ->getForm();
-
-        $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid())
-        {
-            $candidate->setIdCandidate($user->getIdUser());
-            $candidate->setIdl(1);
-            $candidate->setStatus('code');
-            $candidate->setRegistrationDate(new \DateTime());
-            $manager->persist($candidate);
-            $manager->flush();
-
-            return $this->redirectToRoute('login');
-        }
-        return $this->render('security/candidate.html.twig', [
-            'form' =>$form->createView()
-        ]);
-    }
-
-    /**
-     * @Route("/login", name="login")
-     */
-    public function login(AuthenticationUtils $authenticationUtils)
-    {
-        $error =$authenticationUtils->getLastAuthenticationError();
-        $lastUsername= $authenticationUtils->getLastUsername();
-        return $this->render('security/login.html.twig', [
-            'last_username'=>$lastUsername,
-            'error'=>$error
-        ]);
-    }
-
-    /**
-     * @Route("/logout", name="logout")
-     */
-    public function logout()
-    {
-    }
-
-
-
-
-/*        if($planning->getIdC() == $this->getUser()->getIdUser()){
-           $manager->remove($lesson);
-            $manager->flush();
-        }
-        $this->redirectToRoute('planning');*/
 
 }

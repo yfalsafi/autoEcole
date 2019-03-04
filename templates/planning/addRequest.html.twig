@@ -19,7 +19,7 @@
             <br/>
             <button type="submit" class="btn btn-primary">Add</button>
             {% if editMode %}
-                <a href="{{ path('deleteLesson',{'id':lesson.idL}) }}" class="btn btn-danger">Delete</a>
+                <a href="{{ path('deleteLesson',{'id':lesson.id}) }}" class="btn btn-danger">Delete</a>
             {% endif %}
             {{ form_end(form) }}
         </section>

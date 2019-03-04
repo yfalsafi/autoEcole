@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -24,16 +26,16 @@ class Instructor
     /**
      * @var string|null
      *
-     * @ORM\Column(name="nameI", type="string", length=50, nullable=true)
+     * @ORM\Column(name="surname", type="string", length=50, nullable=true)
      */
-    private $namei;
+    private $surname;
 
     /**
      * @var string|null
      *
-     * @ORM\Column(name="surnameI", type="string", length=50, nullable=true)
+     * @ORM\Column(name="firstname", type="string", length=50, nullable=true)
      */
-    private $surnamei;
+    private $firstname;
 
     /**
      * @var string|null
@@ -55,32 +57,55 @@ class Instructor
      * @ORM\Column(name="hiringDate", type="date", nullable=true)
      */
     private $hiringdate;
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="status", type="string", length=1, nullable=true)
+     */
+    private $status;
+
+    /**
+     * @var User
+     * @ORM\OneToMany(targetEntity="App\Entity\User", mappedBy="instructor")
+     */
+    private $users;
+
+
+    public function __construct()
+    {
+        $this->users = new ArrayCollection();
+    }
 
     public function getIdInstructor(): ?int
     {
         return $this->idInstructor;
     }
-
-    public function getNamei(): ?string
+    public function setIdInstructor(?int $idInstructor): self
     {
-        return $this->namei;
+        $this->idInstructor= $idInstructor;
+        return $this;
     }
 
-    public function setNamei(?string $namei): self
+    public function getFirstName(): ?string
     {
-        $this->namei = $namei;
+        return $this->firstname;
+    }
+
+    public function setFirstName(?string $firstname): self
+    {
+        $this->firstname = $firstname;
 
         return $this;
     }
 
-    public function getSurnamei(): ?string
+    public function getSurname(): ?string
     {
-        return $this->surnamei;
+        return $this->surname;
     }
 
-    public function setSurnamei(?string $surnamei): self
+    public function setSurname(?string $surname): self
     {
-        $this->surnamei = $surnamei;
+        $this->surname = $surname;
 
         return $this;
     }
@@ -109,6 +134,18 @@ class Instructor
         return $this;
     }
 
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?string $status): self
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
     public function getHiringdate(): ?\DateTimeInterface
     {
         return $this->hiringdate;
@@ -120,6 +157,38 @@ class Instructor
 
         return $this;
     }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): self
+    {
+        if (!$this->users->contains($user)) {
+            $this->users[] = $user;
+            $user->setInstructor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): self
+    {
+        if ($this->users->contains($user)) {
+            $this->users->removeElement($user);
+            // set the owning side to null (unless already changed)
+            if ($user->getInstructor() === $this) {
+                $user->setInstructor(null);
+            }
+        }
+
+        return $this;
+    }
+
 
 
 }

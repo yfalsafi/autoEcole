@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% endblock %}
+
+{% block body %}
+    <section>
+        <div class="container">
+            <div class="row">
+
+                <div class="col-lg-9">
+                    <div class="row">
+
+                        {% for package in packages %}
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h4 class="card-title">
+                                            <a href="#">{{ package.title }}</a>
+                                        </h4>
+                                        <h5>${{ package.price/100 }}</h5>
+                                        <p class="card-text">{{ package.content }}</p>
+                                    </div>
+                                    <div class="card-footer text-center">
+                                        {#<a href="{{ path('package_details', {'id':package.id}) }}" class="btn-primary btn"> Details</a>#}
+                                        <button class="btn btn-primary JsBookValidation" data-book="{{ package.id }}">Book Now</button>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                </div>
+            </div>
+            <div id="dataModal" class="modal fade">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title" id="modal-title"></h4>
+                        </div>
+                        <div class="modal-body" id="modal_detail">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}
+{% block javascripts %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+    <script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('.JsBookValidation').click(function () {
+                $('#modal-title').html("Confirmation");
+                var url = '{{ path('order_validation',{'id':'replace'}) }}';
+                url = url.replace('replace', $(this).data('book'));
+                $.ajax({
+                    type: 'post',
+                    url: url,
+                    success: function (data) {
+                        $('#modal_detail').html(data);
+                        $('#dataModal').modal("show");
+                    }
+                });
+
+            });
+
+
+        });
+    </script>
+
+{% endblock %}

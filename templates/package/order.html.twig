@@ -1,0 +1,58 @@
+{% block title %}{% endblock %}
+
+{% block body %}
+    <section>
+        <div class="container text-center align-content-center">
+            <h3>Purchase's Summary</h3>
+
+            <table class="mt-4">
+                <thead>
+                    <tr>
+                        <th>Content</th>
+                        <th>Quantity</th>
+                        <th>Price TTC</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ package.title }}</td>
+                        <td>{{ package.title }}</td>
+                        <td>{{ package.price }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <button class="btn btn-primary mt-4 jsConfirm" data-confirm="{{ package.id }}">Buy</button>
+        </div>
+    </section>
+
+
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+    <script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+
+    <script>
+        $( document ).ready(function() {
+            $(".jsConfirm").click(function () {
+                $.ajax({
+                    url: Routing.generate('candidate_purchase', {id: $(this).data('confirm'),
+                    success: function(result){
+                        console.log(result);
+                        if (result == 'ok') {
+                            console.log('in');
+                            $("#modal-title").hide()
+                        }
+                    }
+
+                }),
+
+            });
+        })})
+
+    </script>
+
+{% endblock %}

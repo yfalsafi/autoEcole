@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% endblock %}
+
+{% block body %}
+    <section>
+        <div class="container">
+            <h3>Choose your Instructor</h3>
+            {{ form_start(form) }}
+            {{ form_row(form.name, {}) }}
+            <button type="submit" class="btn btn-primary"> This one for sure!</button>
+            {{ form_end(form) }}
+        </div>
+    </section>
+
+{% endblock %}

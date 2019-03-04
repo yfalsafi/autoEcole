@@ -6,53 +6,42 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Lesson
- *
- * @ORM\Table(name="lesson")
  * @ORM\Entity(repositoryClass="App\Repository\LessonRepository")
  */
 class Lesson
 {
     /**
-     * @var int
-     *
-     * @ORM\Column(name="idL", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     * @ORM\ManyToOne(targetEntity="Planning")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="idl", referencedColumnName="idl")
-     * })
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
      */
-    private $idl;
+    private $id;
 
     /**
      * @var \DateTime
-     *@Assert\GreaterThan("now")
-     * @ORM\Column(name="start_at", type="datetime", nullable=false)
+     * @Assert\GreaterThan("now")
+     * @ORM\Column(type="datetime")
      */
     private $startAt;
 
     /**
      * @var \DateTime
-     *@Assert\Expression(
+     * @Assert\Expression(
      *     "this.getEndAt() > this.getStartAt()",
      *     message="The End start before or at the same time that the Start"
      * )
-     * @ORM\Column(name="end_at", type="datetime", nullable=false)
+     * @ORM\Column(type="datetime")
      */
     private $endAt;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="status", type="string", length=1, nullable=false, options={"fixed"=true})
+     * @ORM\Column(type="string", length=1, nullable=false, options={"fixed"=true})
      */
     private $status;
 
-    public function getIdl(): ?int
+    public function getId(): ?int
     {
-        return $this->idl;
+        return $this->id;
     }
 
     public function getStartAt(): ?\DateTimeInterface
@@ -90,6 +79,4 @@ class Lesson
 
         return $this;
     }
-
-
 }

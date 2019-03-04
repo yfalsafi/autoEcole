@@ -5,77 +5,72 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Planning
- *
- * @ORM\Table(name="planning")
  * @ORM\Entity(repositoryClass="App\Repository\PlanningRepository")
  */
 class Planning
 {
     /**
-     * @var int
-     *
-     * @ORM\Column(name="idC", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="planningsC")
+     * @ORM\JoinColumn(nullable=false)
      */
     private $idc;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="idI", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="planningsI")
+     * @ORM\JoinColumn(nullable=false)
      */
     private $idi;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="idL", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
-     * @ORM\ManyToOne(targetEntity="Lesson")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="idl", referencedColumnName="idl")
-     * })
+     * @ORM\ManyToOne(targetEntity="App\Entity\Lesson")
      */
     private $idl;
 
-    public function getIdc(): ?int
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getIdc(): ?User
     {
         return $this->idc;
     }
 
-    public function getIdi(): ?int
+    public function setIdc(?User $idc): self
+    {
+        $this->idc = $idc;
+
+        return $this;
+    }
+
+    public function getIdi(): ?User
     {
         return $this->idi;
     }
 
-    public function getIdl(): ?int
+    public function setIdi(?User $idi): self
+    {
+        $this->idi = $idi;
+
+        return $this;
+    }
+
+    public function getIdl(): ?Lesson
     {
         return $this->idl;
     }
 
-    public function setIdc(int $idc): self
+    public function setIdl(?Lesson $idl): self
     {
-        $this->idc=$idc;
+        $this->idl = $idl;
+
         return $this;
     }
-
-    public function setIdi(int $idi): self
-    {
-        $this->idi=$idi;
-        return $this;
-    }
-
-    public function setIdl(int $idl): self
-    {
-        $this->idl=$idl;
-        return $this;
-    }
-
-
-
 }

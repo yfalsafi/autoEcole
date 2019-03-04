@@ -15,11 +15,11 @@ class Package
     /**
      * @var int
      *
-     * @ORM\Column(name="id_package", type="integer", nullable=false)
+     * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $idPackage;
+    private $id;
 
     /**
      * @var string
@@ -31,20 +31,31 @@ class Package
     /**
      * @var string|null
      *
-     * @ORM\Column(name="content", type="string", length=300, nullable=true)
+     * @ORM\Column(type="text", nullable=true)
      */
     private $content;
 
     /**
-     * @var float|null
+     * @var int|null
      *
-     * @ORM\Column(name="price", type="float", precision=10, scale=0, nullable=true)
+     * @ORM\Column(name="price", type="integer", precision=10, scale=0, nullable=true)
      */
     private $price;
 
-    public function getIdPackage(): ?int
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $isPackage;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $nbHours;
+
+
+    public function getId(): ?int
     {
-        return $this->idPackage;
+        return $this->id;
     }
 
     public function getTitle(): ?string
@@ -83,5 +94,28 @@ class Package
         return $this;
     }
 
+    public function getIsPackage(): ?bool
+    {
+        return $this->isPackage;
+    }
+
+    public function setIsPackage(?bool $isPackage): self
+    {
+        $this->isPackage = $isPackage;
+
+        return $this;
+    }
+
+    public function getNbHours(): ?int
+    {
+        return $this->nbHours;
+    }
+
+    public function setNbHours(?int $nbHours): self
+    {
+        $this->nbHours = $nbHours;
+
+        return $this;
+    }
 
 }

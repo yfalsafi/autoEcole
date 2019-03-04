@@ -15,37 +15,10 @@ class PlanningController extends AbstractController
 {
 
     public $days= ['Lundi', 'Mardi','Mercredi', 'Jeudi','Vendredi', 'Samedi', 'Dimanche'];
-    private $months=['Janvier','Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Decémbre'];
 
     private $month;
     private $year;
 
-    /**
-     * PlanningController constructor.
-     * @param null $month 1-12
-     * @param null $year
-     * @throws null \Exception
-     */
-    public function __construct(?int $month = null,?int $year = null)
-    {
-        if($month === null)
-            $month = intval(date('m'));
-        if($year === null)
-            $year = intval(date('Y'));
-        if($month < 1 || $month > 12)
-            throw new \Exception("Month $month not valid");
-
-        $this->month=$month;
-        $this->year=$year;
-    }
-
-    /**
-     * Return month in string (ex: Janvier 2019)
-     * @return string
-     */
-    public function toString(): string {
-        return $this->months[$this->month -1].' '.$this->year;
-    }
 
     /**
      * Return First Day
@@ -60,6 +33,10 @@ class PlanningController extends AbstractController
      * @return int
      */
     public function getWeeks(): int {
+        $date=new \DateTime();
+        if($this->month== null){
+            $this->month= $date->format('m');
+        }
         $start = $this->getFirstDay();
         $end = (clone $start)->modify('+1 month -1 day');
         $startWeek= intval($start->format('W'));
@@ -91,30 +68,48 @@ class PlanningController extends AbstractController
      */
     public function index($id =null,$idy = null)
     {
+        $date=new \DateTime();
+        if($this->month== null){
+            $this->month= $date->format('m');
+        }
         if($id && !$idy)
         {
-            $month = new PlanningController($id, null);
-            $idy=$month->year;
+            $test= \DateTime::createFromFormat('m',$id);
+            $month = $test->format('F');
+            $idy=$date->format('Y');
         }
-        else if($id && $idy)
-            $month = new PlanningController($id, $idy);
+        else if($id && $idy){
+            $test= \DateTime::createFromFormat('m',$id);
+            $month=\DateTime::createFromFormat('m',$id.'-'.$idy);
+        }
         else
         {
-            $month = new PlanningController();
-            $idy= $month->year;
+            $test= \DateTime::createFromFormat('m',date('m'));
+            $month = $date->format('F');
+            $idy= $date->format('Y');
         }
+        $this->year=$idy;
+        $month_int = $test->format('m');
         $user=$this->getUser();
-        $start = $month->getFirstDay();
-        $start = $start->format('N') === 1 ? $start : $month->getFirstDay()->modify('last monday');
-        $end = (clone $start)->modify('+'.(6 + 7 * ($month->getWeeks() -1)) .'days');
+        $start = $this->getFirstDay();
+        $start = $start->format('N') === 1 ? $start : $this->getFirstDay()->modify('last monday');
+        $end = (clone $start)->modify('+'.(6 + 7 * ($this->getWeeks() -1)) .'days');
         //$hours = $month->getEventBetween($start,$end,1);
-        $repo= $this->getDoctrine()->getRepository(Lesson::class);
+        $repo= $this->getDoctrine()->getRepository(Planning::class);
         $days=[];
-        $events = $repo->findAllBetween($user->getIdUser(),$start,$end);
-        dump($events);
+        if($this->getUser()->getIsInstructor())
+        {
+            $events = $repo->findAllInstructorHourBetween($user->getId(),$start,$end);
+        }else
+        {
+            $events = $repo->findAllCandidateHourBetween($user->getId(),$start,$end);
+        }
+
+
         $isToday= date('Y-m-d');
+        dump($days);
         foreach ($events as $event){
-            $date= $event->getStartAt()->format('Y-m-d');
+            $date= $event->getIdl()->getStartAt()->format('Y-m-d');
             if(isset($days[$date]))
             {
                 $days[$date][]= $event;
@@ -124,18 +119,19 @@ class PlanningController extends AbstractController
                 $days[$date][] =$event;
             }
 
-            dump($days);
+
 
         }
+        dump($days);
         return $this->render('planning/index.html.twig', [
             'id' => $id,
             'isToday' => $isToday,
             'idy' => $idy,
             'days' => $days,
             'start' => $start,
-            'weeks' => $month->getWeeks(),
-            'daysInMonth' => $month->days,
-            'month_string' => $month->toString(),
+            'weeks' => $this->getWeeks(),
+            'daysInMonth' => $this->days,
+            'month_string' => $month,
 
         ]);
     }

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Lesson;
 use App\Entity\Planning;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -11,11 +12,11 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
 use App\Entity\Candidate;
-use App\Entity\Users;
+use App\Entity\User;
 use App\Repository\CandidateRepository;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\User\User;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+
 
 class LessonController extends AbstractController
 {
@@ -25,18 +26,31 @@ class LessonController extends AbstractController
 
 
     /**
-     * @Route("/new", name="addRequest")
-     * @Route("/edit/{id}", name="editLesson")
+     * @Route("/lesson/new", name="addRequest")
+     * @Route("/lesson/edit/{id}", name="editLesson")
+     * @Route("/lesson/new/{id1}", name="newLesson")
      */
-    public function AddRequest(Lesson $lesson = null,Request $request, ObjectManager $manager)
+    public function AddRequest(Lesson $lesson = null, Request $request, ObjectManager $manager,$id1 = null)
     {
+        $user= $this->getUser();
         $edit=true;
+        dump($user);
         if(!$lesson)
         {
             $edit=false;
             $lesson= new Lesson();
-            $lesson->setStartAt(new \DateTime());
-            $lesson->setEndAt(new \DateTime());
+            if ($id1 != null){
+                $lesson->setStartAt(new \DateTime($id1));
+                $lesson->setEndAt(new \DateTime($id1));
+            }else
+            {
+                $lesson->setStartAt(new \DateTime());
+                $lesson->setEndAt(new \DateTime());
+            }
+
+        }
+        if($user->getInstructor()== null){
+            return $this->redirectToRoute('set_instructor');
         }
 
 
@@ -57,17 +71,18 @@ class LessonController extends AbstractController
             {
                 $month =$lesson->getStartAt()->format('m');
                 $year =$lesson->getStartAt()->format('Y');
-                $lesson->setStatus('Waiting');
+                $lesson->setStatus('W');
                 $manager->persist($lesson);
-                $manager->flush();
+                dump($edit);
                if(!$edit)
                {
-                   $repo= $this->getDoctrine()->getRepository(Candidate::class);
-                   $lessonController = new LessonController();
-                  $lessonController->setPlanning($lesson, $this->getUser(),$repo,$manager);
+                   $planning =new Planning();
+                   $planning->setIdi($user->getInstructor());
+                   $planning->setIdc($user);
+                   $planning->setIdl($lesson);
+                   $manager->persist($planning);
                }
-                return $this->redirectToRoute('planningByM', array('id'=>$month, 'idy'=>$year)
-                );
+                $manager->flush();
             }
 
         }
@@ -75,7 +90,7 @@ class LessonController extends AbstractController
             'errors'=>$errors,
             'lesson'=>$lesson,
             'form' =>$form->createView(),
-            'editMode'=>$lesson->getIdl()!== null
+            'editMode'=>$lesson->getId()!== null
         ]);
 
 
@@ -90,6 +105,12 @@ class LessonController extends AbstractController
         $errors= array();
         $start=$lesson->getStartAt()->format('Y-m-d');
         $end=$lesson->getEndAt()->format('Y-m-d');
+        $hoursLeft = $this->getUser()->getHoursLeft();
+        if(!$hoursLeft)
+            $hoursLeft=0;
+        $repo=$this->getDoctrine()->getRepository(Lesson::class);
+        $result = $repo->findByDateAndId($this->getUser(),$this->getUser()->getInstructor(),$start,$end);
+
         if($start != $end)
             $errors[]='The Beginning and the end must be at the day';
         if($lesson->getStartAt()->format('N') == 6 || $lesson->getStartAt()->format('N') == 7)
@@ -102,8 +123,8 @@ class LessonController extends AbstractController
             $errors[]='The end doesn\'t respect the  opening hours 7h -> 21h';
         if(strtotime(date("H:i", strtotime($start) +strtotime($this->limit))) < strtotime($end))
             $errors[]="Can‘t take more than 2 hours in row";
-
-        dump($lesson->getStartAt()->format('N'));
+        if($hoursLeft - date('H',strtotime($end)-strtotime($start)) < 0)
+            $errors[]="You don't have enough hours. You have ".$hoursLeft. " hours left.";
         return $errors;
     }
 
@@ -127,28 +148,31 @@ class LessonController extends AbstractController
     /**
      * Insert Data on Planning table
      * @param Lesson $lesson
-     * @param Users $user
+     * @param User $user
      * @param $repo
      */
-    public function setPlanning(Lesson $lesson, Users $user,$repo, ObjectManager $manager){
+    public function setPlanning(Lesson $lesson, User $user, $repo, ObjectManager $manager){
         $planning= new Planning();
-        $planning->setIdc($user->getIdUser());
+        $planning->setIdc($user->getId());
         $planning->setIdl($lesson->getIdl());
-        $result = $repo->findOneByIdUser($user->getIdUser());
+        $result = $repo->findOneByIdUser($user->getId());
+
         $planning->setIdi($result->getIdI());
         $manager->persist($planning);
         $manager->flush();
     }
 
-    /**
-     * @Route("/lesson/new/{id}", name="newLesson")
-     */
-    public function newLesson($id,Request $request, ObjectManager $manager)
+
+   /* public function newLesson($id,Request $request, ObjectManager $manager)
     {
+
+        $user= $this->getUser();
+        if($user->getInstructor()== null){
+            return $this->redirectToRoute('set_instructor');
+        }
+
         $lesson= new Lesson();
-        $lesson->setStartAt(new \DateTime($id));
-        dump($lesson->getStartAt());
-        $lesson->setEndAt(new \DateTime($id));
+
         $errors=array();
         $form= $this->createFormBuilder($lesson)
             ->add('startAt',DateTimeType::class, array(
@@ -164,16 +188,29 @@ class LessonController extends AbstractController
             $errors = $this->CheckDatetime($lesson);
             if(!$errors)
             {
+                $planning =new Planning();
                 $month =$lesson->getStartAt()->format('m');
                 $year =$lesson->getStartAt()->format('Y');
-                $lesson->setStatus('Waiting');
-                $manager->persist($lesson);
-                $manager->flush();
-                $repo= $this->getDoctrine()->getRepository(Candidate::class);
-                $lessonController = new LessonController();
-                $lessonController->setPlanning($lesson, $this->getUser(),$repo,$manager);
-                return $this->redirectToRoute('planningByM', array('id'=>$month, 'idy'=>$year)
-                );
+
+                $lesson->setStatus('W');
+
+
+                $planning->setIdi($user->getInstructor());
+                $planning->setIdc($user);
+                $planning->setIdl($lesson);
+                dump($lesson);
+                dump($planning);
+
+                try{
+                    $manager->persist($lesson);
+                    $manager->persist($planning);
+                    $manager->flush();
+                }catch (\Exception $e){
+                    $errors= $e->getMessage();
+                }
+
+
+ //               return $this->redirectToRoute('planningByM');
             }
 
         }
@@ -182,11 +219,33 @@ class LessonController extends AbstractController
             'errors'=>$errors,
             'lesson'=>$lesson,
             'form' =>$form->createView(),
-            'editMode'=>$lesson->getIdl()!== null,
+            'editMode'=>$lesson->getId()!== null,
         ]);
 
 
-    }
+    }*/
 
+    /**
+     * @param $id
+     * @Route("/instructor/update-status/{id}",name="update_status", options={"expose"=true})
+     * @return JsonResponse
+     */
+    public function UpdateStatus(ObjectManager $manager, Request $request, $id)
+    {
+        // traitement en DB
+        // Changer le status de la lesson
+        // $request->query->get('status')
+        $repo = $this->getDoctrine()->getRepository(Lesson::class);
+        $lesson = $repo->findOneBy([
+            'id'=>$id
+        ]);
+
+        $lesson->setStatus($request->query->get('status'));
+
+        $manager->persist($lesson);
+        $manager->flush();
+
+       return $this->json('ok', 200);
+    }
 
 }

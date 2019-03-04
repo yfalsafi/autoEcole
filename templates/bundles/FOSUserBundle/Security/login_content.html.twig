@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% endblock %}
+
+{% block body %}
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="card">
+                        <article class="card-body">
+                            <a href="{{ path("registration_candidate") }}" class="float-right btn btn-outline-primary">Sign up</a>
+                            <h4 class="card-title mb-4 mt-1">Sign in</h4>
+
+
+
+                            {% if error %}
+                                <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                            {% endif %}
+                            <form action="{{ path("fos_user_security_check") }}" method="post">
+                                <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+                                <div class="form-group">
+                                    <label for="username">{{ 'Username'|trans }}</label>
+                                    <input type="text" id="username" name="_username" value="{{ last_username }}" required="required" autocomplete="username"  class="form-control" >
+                                </div> <!-- form-group// -->
+                                <div class="form-group">
+                                    <label for="password">{{ 'Password'|trans }}</label>
+                                    <input class="form-control" placeholder="******" type="password" id="password" name="_password" required="required" autocomplete="current-password">
+                                </div> <!-- form-group// -->
+                                <div class="form-group">
+                                    <div class="checkbox">
+                                        <input type="checkbox" id="remember_me" name="_remember_me" value="on" />
+                                        <label for="remember_me">{{ 'Remember_me'|trans }}</label>
+                                    </div> <!-- checkbox .// -->
+                                </div> <!-- form-group// -->
+                                <div class="form-group">
+                                    <input type="submit" id="_submit" name="_submit" class="btn btn-primary btn-block" value="{{ 'Submit'|trans }}" />
+                                </div> <!-- form-group// -->
+                            </form>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+{{ dump(csrf_token)}}
+
+{% endblock %}

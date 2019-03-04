@@ -15,15 +15,15 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
 class PlanningRepository extends ServiceEntityRepository
 {
     public function __construct(RegistryInterface $registry)
-    {
-        parent::__construct($registry, Planning::class);
-    }
+{
+    parent::__construct($registry, Planning::class);
+}
 
     public function findAllBetween($user, $start, $end ):array
     {
         return $this->createQueryBuilder('p')
             ->from('App\Entity\Lesson', 'l')
-            ->andWhere('l.idl = p.idl')
+            ->andWhere('l.id = p.idl')
             ->andWhere('p.idc = (:user)')
             ->andWhere('l.startAt BETWEEN (:start) AND (:end)')
             ->addOrderBy('l.startAt')
@@ -35,13 +35,72 @@ class PlanningRepository extends ServiceEntityRepository
             ;
     }
 
+    public function findAllCandidateHourBetween($user,$start,$end)
+    {
+        return $this->createQueryBuilder('p')
+            ->select('p')
+            ->join('p.idl', 'l')
+            ->addSelect('l')
+            ->andWhere('p.idl = l.id')
+            ->leftJoin('p.idc', 'u')
+            ->addSelect('u')
+            ->andWhere('p.idc = u.id')
+            ->andWhere('l.endAt BETWEEN (:start) AND (:end)')
+            ->andWhere('p.idc = :user')
+            ->setParameter('user', $user)
+            ->setParameter('start', $start)
+            ->setParameter('end', $end)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    public function findAllInstructorHourBetween($user,$start,$end)
+    {
+        return $this->createQueryBuilder('p')
+            ->select('p')
+            ->join('p.idl', 'l')
+            ->addSelect('l')
+            ->andWhere('p.idl = l.id')
+            ->leftJoin('p.idc', 'u')
+            ->addSelect('u')
+            ->andWhere('p.idc = u.id')
+            ->andWhere("l.status != 'D'")
+            ->andWhere('l.endAt BETWEEN (:start) AND (:end)')
+            ->andWhere('p.idi = :user')
+            ->setParameter('user', $user)
+            ->setParameter('start', $start)
+            ->setParameter('end', $end)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    public function findAllByInstructor($instructor,$date)
+    {
+        return $this->createQueryBuilder('p')
+            ->select('p')
+            ->join('p.idl', 'l')
+            ->addSelect('l')
+            ->andWhere('p.idl = l.id')
+            ->leftJoin('p.idc', 'u')
+            ->addSelect('u')
+            ->andWhere('p.idc = u.id')
+            ->andWhere('l.startAt > :start')
+            ->andWhere('p.idi = :user')
+            ->setParameter('user', $instructor)
+            ->setParameter('start', $date)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
 
     public function findNbLessonByUser($user,$date)
     {
         return $this->createQueryBuilder('p')
             ->select('count(p)')
             ->join('App\Entity\Lesson', 'l')
-            ->Where('p.idl = l.idl')
+            ->andWhere('p.idl = l.id')
             ->andWhere('l.startAt < (:date)')
             ->andWhere('p.idc = (:user)')
             ->setParameter('user', $user)
@@ -56,7 +115,7 @@ class PlanningRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('p')
             ->select('count(p)')
             ->join('App\Entity\Lesson', 'l')
-            ->Where('p.idl = l.idl')
+            ->andWhere('p.idl = l.id')
             ->andWhere('l.startAt < (:date)')
             ->andWhere('p.idi = (:user)')
             ->setParameter('user', $user)

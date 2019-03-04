@@ -19,13 +19,24 @@ class InstructorRepository extends ServiceEntityRepository
         parent::__construct($registry, Instructor::class);
     }
 
-    public function findOneByIdUser($value)
+    public function findOneByIdInstructor($value)
     {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.idCandidate = (:val)')
+        return $this->createQueryBuilder('i')
+            ->andWhere('i.idCandidate = (:val)')
             ->setParameter('val', $value)
             ->getQuery()
             ->getOneOrNullResult()
+            ;
+    }
+
+
+    public function findAllByIdInstructor($value)
+    {
+        return $this->createQueryBuilder('i')
+            ->andWhere('i.id_instructor = (:val)')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getResult()
             ;
     }
 
