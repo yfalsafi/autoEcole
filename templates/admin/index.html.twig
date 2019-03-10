@@ -1,0 +1,270 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block stylesheets %}
+    {{  parent()}}
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+{% endblock %}
+{% block body %}
+    <section>
+        <div class="container">
+            <div id="wrapper">
+                {#<!-- Sidebar -->#}
+                {#<ul class="sidebar navbar-nav">#}
+                {#<li class="nav-item active">#}
+                {#<a class="nav-link" href="index.html">#}
+                {#<i class="fas fa-fw fa-tachometer-alt"></i>#}
+                {#<span>Dashboard</span>#}
+                {#</a>#}
+                {#</li>#}
+                {#<li class="nav-item dropdown">#}
+                {#<a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">#}
+                {#<i class="fas fa-fw fa-folder"></i>#}
+                {#<span>Pages</span>#}
+                {#</a>#}
+                {#</li>#}
+                {#<li class="nav-item">#}
+                {#<a class="nav-link" href="charts.html">#}
+                {#<i class="fas fa-fw fa-chart-area"></i>#}
+                {#<span>Charts</span></a>#}
+                {#</li>#}
+                {#<li class="nav-item">#}
+                {#<a class="nav-link" href="tables.html">#}
+                {#<i class="fas fa-fw fa-table"></i>#}
+                {#<span>Tables</span></a>#}
+                {#</li>#}
+                {#</ul>#}
+
+                <div id="content-wrapper">
+
+                    <div class="container-fluid">
+
+                        <!-- Breadcrumbs-->
+                        {#<ol class="breadcrumb">#}
+                        {#<li class="breadcrumb-item">#}
+                        {#<a href="#">Dashboard</a>#}
+                        {#</li>#}
+                        {#<li class="breadcrumb-item active">Overview</li>#}
+                        {#</ol>#}
+
+                        <!-- Icon Cards-->
+                        <div class="row">
+                            <div class="col-xl-3 col-sm-6 mb-3">
+                                <div class="card text-white bg-primary o-hidden h-100">
+                                    <div class="card-body">
+                                        <div class="card-body-icon">
+                                            <i class="fas fa-fw fa-user-plus"></i>
+                                        </div>
+                                        <div class="mr-5">{{ numbers.nbRegistration }} New User this month!</div>
+                                    </div>
+                                    <a class="card-footer text-white clearfix small z-1" href="{{ path('admin_new_candidate_details') }}">
+                                        <span class="float-left">View Details</span>
+                                        <span class="float-right">
+                  <i class="fas fa-angle-right"></i>
+                </span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-sm-6 mb-3">
+                                <div class="card text-white bg-primary o-hidden h-100">
+                                    <div class="card-body">
+                                        <div class="card-body-icon">
+                                            <i class="fas fa-fw fa-user-secret"></i>
+                                        </div>
+                                        <div class="mr-5">{{ numbers.nbInstructor }} Instructors !</div>
+                                    </div>
+                                    <a class="card-footer text-white clearfix small z-1" href="{{ path('admin_instructor_details') }}">
+                                        <span class="float-left">View Details</span>
+                                        <span class="float-right">
+                  <i class="fas fa-angle-right"></i>
+                </span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-sm-6 mb-3">
+                                <div class="card text-white bg-success o-hidden h-100">
+                                    <div class="card-body">
+                                        <div class="card-body-icon">
+                                            <i class="fas fa-fw fa-car"></i>
+                                        </div>
+                                        <div class="mr-5">{{ numbers.nbCar }} Cars Available</div>
+                                    </div>
+                                    <a class="card-footer text-white clearfix small z-1" href="{{ path('admin_cars_details') }}">
+                                        <span class="float-left">View Details</span>
+                                        <span class="float-right">
+                  <i class="fas fa-angle-right"></i>
+                </span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-sm-6 mb-3">
+                                <div class="card text-white bg-danger o-hidden h-100">
+                                    <div class="card-body">
+                                        <div class="card-body-icon">
+                                            <i class="fas fa-fw fa-credit-card"></i>
+                                        </div>
+                                        <div class="mr-5">${{ numbers.turnoverByMonth[0] }} Turnover this month</div>
+                                    </div>
+                                    <a class="card-footer text-white clearfix small z-1" href="#">
+                                        <span class="float-left">View Details</span>
+                                        <span class="float-right">
+                  <i class="fas fa-angle-right"></i>
+                </span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4">
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <i class="fas fa-chart-pie"></i>
+                                    Status Pie Chart </div>
+                                <div class="card-body">
+                                    <canvas id="myPieChart" width="100%" height="100"></canvas>
+                                </div>
+                                <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Area Chart Example-->
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <i class="fas fa-chart-area"></i>
+                            Turnover Chart</div>
+                        <div class="card-body">
+                            <canvas id="myAreaChart" width="100%" height="30"></canvas>
+                        </div>
+                        <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+                    </div>
+
+                    <!-- DataTables Example -->
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <i class="fas fa-table"></i>
+                            Candidates</div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>email</th>
+                                        <th>Address</th>
+                                        <th>Status</th>
+                                        <th>Register</th>
+                                        <th>Hours Done</th>
+                                        <th>Money spent</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for candidate in numbers.allCandidates %}
+                                        <tr>
+                                            <td>{{ candidate.name }} {{  candidate.firstName }} </td>
+                                            <td>{{ candidate.email }}</td>
+                                            <td>{{ candidate.address }} {{ candidate.city }}</td>
+                                            <td>{{ candidate.status }}</td>
+                                            <td>{{ candidate.registerAt|date('d-m-Y') }}</td>
+                                            <td>{{ candidate.hoursDone }}</td>
+                                            <td>
+                                                {% for paid in numbers.moneySpent %}
+                                                    {% if paid.name == candidate.name %}
+                                                        ${{ paid[1] }}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+                    </div>
+
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- /.content-wrapper -->
+
+        </div>
+        <!-- /#wrapper -->
+        </div>
+
+    </section>
+{% block javascripts %}
+    <script src="{{ asset('js/Chart.min.js') }}"></script>
+    <script>
+        // Set new default font family and font color to mimic Bootstrap's default styling
+        Chart.defaults.global.defaultFontFamily = '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+        Chart.defaults.global.defaultFontColor = '#292b2c';
+
+        // Area Chart Example
+        var ctx = document.getElementById("myAreaChart");
+        var myLineChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ["{{ currentDate|date_modify('-4 month')|date('M y') }}", "{{ currentDate|date_modify(" -3 month")|date("M y") }}", "{{ currentDate|date_modify('-2 month')|date('M y') }}", "{{ currentDate|date_modify('-1 month')|date('M y') }}", "{{ currentDate|date('M y') }}"],
+                datasets: [{
+                    label: "Sessions",
+                    lineTension: 0.3,
+                    backgroundColor: "rgba(2,117,216,0.2)",
+                    borderColor: "#004d89",
+                    pointRadius: 5,
+                    pointBackgroundColor: "#054491",
+                    pointBorderColor: "rgba(255,255,255,0.8)",
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: "rgba(2,117,216,1)",
+                    pointHitRadius: 50,
+                    pointBorderWidth: 2,
+                    data: [{{ numbers.turnoverByMonth[4] }}, {{ numbers.turnoverByMonth[3] }}, {{ numbers.turnoverByMonth[2] }}, {{ numbers.turnoverByMonth[1] }}, {{ numbers.turnoverByMonth[0] }}],
+                }],
+            },
+            options: {
+                scales: {
+                    xAxes: [{
+                        time: {
+                            unit: 'date'
+                        },
+                        gridLines: {
+                            display: false
+                        },
+                        ticks: {
+                            maxTicksLimit: 7
+                        }
+                    }],
+                    yAxes: [{
+                        ticks: {
+                            min: 0,
+                            max: 40000,
+                            maxTicksLimit: 5
+                        },
+                        gridLines: {
+                            color: "rgba(0, 0, 0, .125)",
+                        }
+                    }],
+                },
+                legend: {
+                    display: false
+                }
+            }
+        });
+
+        var ctx = document.getElementById("myPieChart");
+        var myPieChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ["Driving", "Code"],
+                datasets: [{
+                    data: [{{ numbers.drivingCandidate }}, {{ numbers.codeCandidate }}],
+                    backgroundColor: ['#054491', '#b20000'],
+                }],
+            },
+        });
+
+    </script>
+{% endblock %}
+
+{% endblock %}

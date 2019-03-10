@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Validator\Constraints as AssertB;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\LessonRepository")
@@ -20,7 +21,9 @@ class Lesson
     /**
      * @var \DateTime
      * @Assert\GreaterThan("now")
+     * @AssertB\CheckDateTime
      * @ORM\Column(type="datetime")
+     *
      */
     private $startAt;
 

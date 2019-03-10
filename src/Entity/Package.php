@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Package
  *
  * @ORM\Table(name="package")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\PackageRepository")
  */
 class Package
 {

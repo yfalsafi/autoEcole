@@ -6,21 +6,27 @@
     <div class="container">
         <section id="services">
             <h1>{% if editMode %}Edit Lesson {% else %}New Lesson{% endif %}</h1>
-            {% for error in errors %}
-                <div class="alert alert-danger">
-                    {{ error }}
-                </div>
-            {% endfor %}
             {{ form_start(form) }}
-            {{ form_row(form.startAt, { 'label': 'Start',  'attr': {
-                'class':'input-group date'}}) }}
-            {{ form_row(form.endAt , { 'label': 'End', 'attr': {
-                'class':'input-group date'}}) }}
-            <br/>
-            <button type="submit" class="btn btn-primary">Add</button>
-            {% if editMode %}
-                <a href="{{ path('deleteLesson',{'id':lesson.id}) }}" class="btn btn-danger">Delete</a>
-            {% endif %}
+
+                {% if form_errors(form) %}
+                    <div class="alert alert-danger">
+                        {{ form_errors(form) }}
+                    </div>
+                {% endif %}
+
+                {{ form_row(form.startAt, { 'label': 'Start',  'attr': {
+                    'class':'input-group date'}}) }}
+                {{ form_row(form.endAt , { 'label': 'End', 'attr': {
+                    'class':'input-group date'}}) }}
+                <br/>
+                {% if not editMode %}
+                <button type="submit" class="btn btn-primary">Add</button>
+                {% else %}
+                    {%if date("now")|date('Y-m-d') < lesson.startAt|date('Y-m-d')  %}
+                        <button type="submit" class="btn btn-primary">Modify</button>
+                        <a href="{{ path('deleteLesson',{'id':lesson.id}) }}" class="btn btn-danger">Delete</a>
+                    {% endif %}
+                {% endif %}
             {{ form_end(form) }}
         </section>
     </div>

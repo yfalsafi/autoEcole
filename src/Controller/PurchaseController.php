@@ -10,34 +10,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-class PackageController extends AbstractController
+class PurchaseController extends AbstractController
 {
-    /**
-     * @Route("/package", name="package")
-     */
-    public function index()
-    {
-        $repo = $this->getDoctrine()->getRepository(Package::class);
-        $packages = $repo->findAll();
-        return $this->render('package/index.html.twig', [
-            'packages' => $packages,
-        ]);
-    }
-
-    /**
-     * @Route("/order/details/{id}", name="order_validation", options={"expose"=true})
-     */
-    public function details($id)
-    {
-        $repo = $this->getDoctrine()->getRepository(Package::class);
-        $package = $repo->findOneBy([
-            'id'=>$id
-        ]);
-        //$package->setPrice($package->getPrice()/100);
-        return $this->render('package/order.html.twig', [
-            'package' => $package,
-        ]);
-    }
 
     /**
      * @param $id
@@ -53,8 +27,8 @@ class PackageController extends AbstractController
 
         $purchase = new Purchase();
         $purchase->setBuyAt(new \DateTime())
-                 ->setPackage($package)
-                 ->setUser($this->getUser());
+            ->setPackage($package)
+            ->setUser($this->getUser());
         if(!$package->getIsPackage())
         {
             $purchase->setQuantity($request->query->get('quantity'));
@@ -71,8 +45,22 @@ class PackageController extends AbstractController
             $this->getUser()->setHoursLeft($this->getUser()->getHoursLeft() + $package->getNbHours());
         }
         $manager->persist($purchase);
+        $manager->persist($this->getUser());
         $manager->flush();
 
         return $this->json(['resultat'=>'ok'], 200);
+    }
+
+    /**
+     * @Route("/candidate/history", name="candidate_history")
+     */
+    public function index()
+    {
+        $repo = $this->getDoctrine()->getRepository(Purchase::class);
+        $purchases = $repo->findByUserJoinPackage($this->getUser());
+        //dd($purchases);
+        return $this->render('purchase/index.html.twig', [
+            'purchases' => $purchases,
+        ]);
     }
 }

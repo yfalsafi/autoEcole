@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Car details{% endblock %}
+
+{% block body %}
+    <section>
+        <div class="wrapper">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <i class="fas fa-table"></i>
+                    Cars</div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                            <thead>
+                            <tr>
+                                <th>Model</th>
+                                <th>Purchase date</th>
+                                <th>Available</th>
+                                <th>Instructor</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for car in numbers.Cars %}
+                                <tr>
+                                    <td>{{ car.name }} {{  car.firstName }} </td>
+                                    <td>{{ car.purchaseAt|date('d-m-Y') }}</td>
+                                    <td>{{ car.isAvailable }}</td>
+                                    <td>{#{{ car.address }} {{ instructor.city }}#}</td>
+
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+{% endblock %}

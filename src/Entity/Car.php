@@ -5,78 +5,53 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Car
- *
- * @ORM\Table(name="car", indexes={@ORM\Index(name="idI", columns={"idI"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\CarRepository")
  */
 class Car
 {
     /**
-     * @var int
-     *
-     * @ORM\Column(name="id_car", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
      */
-    private $idCar;
+    private $id;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="idI", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
+     * @ORM\Column(type="datetime")
      */
-    private $idi;
+    private $purchasedAt;
 
     /**
-     * @var \DateTime|null
-     *
-     * @ORM\Column(name="purchaseDate", type="date", nullable=true)
+     * @ORM\Column(type="boolean")
      */
-    private $purchasedate;
+    private $isAvailable;
 
-    /**
-     * @var int|null
-     *
-     * @ORM\Column(name="km", type="integer", nullable=true)
-     */
-    private $km;
-
-    public function getIdCar(): ?int
+    public function getId(): ?int
     {
-        return $this->idCar;
+        return $this->id;
     }
 
-    public function getIdi(): ?int
+    public function getPurchasedAt(): ?\DateTimeInterface
     {
-        return $this->idi;
+        return $this->purchasedAt;
     }
 
-    public function getPurchasedate(): ?\DateTimeInterface
+    public function setPurchasedAt(\DateTimeInterface $purchasedAt): self
     {
-        return $this->purchasedate;
-    }
-
-    public function setPurchasedate(?\DateTimeInterface $purchasedate): self
-    {
-        $this->purchasedate = $purchasedate;
+        $this->purchasedAt = $purchasedAt;
 
         return $this;
     }
 
-    public function getKm(): ?int
+    public function getIsAvailable(): ?bool
     {
-        return $this->km;
+        return $this->isAvailable;
     }
 
-    public function setKm(?int $km): self
+    public function setIsAvailable(bool $isAvailable): self
     {
-        $this->km = $km;
+        $this->isAvailable = $isAvailable;
 
         return $this;
     }
-
-
 }

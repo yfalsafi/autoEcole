@@ -61,7 +61,7 @@ class User extends BaseUser
     private $registerAt;
 
     /**
-     * @var Instructor
+     * @var User
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="id")
      * @ORM\JoinColumn(name="instructor", referencedColumnName="id")
      *
@@ -97,6 +97,11 @@ class User extends BaseUser
      * @ORM\Column(type="integer", nullable=true)
      */
     private $hoursLeft;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $IsAdmin;
 
 
 
@@ -331,6 +336,18 @@ class User extends BaseUser
     public function setHoursLeft(?int $hoursLeft): self
     {
         $this->hoursLeft = $hoursLeft;
+
+        return $this;
+    }
+
+    public function getIsAdmin(): ?bool
+    {
+        return $this->IsAdmin;
+    }
+
+    public function setIsAdmin(?bool $IsAdmin): self
+    {
+        $this->IsAdmin = $IsAdmin;
 
         return $this;
     }

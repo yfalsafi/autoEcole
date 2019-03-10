@@ -40,15 +40,15 @@
                                 {% if i==0 %}
                                     <div class="calendar__weekday">{{ day }}</div>
                                 {% endif %}
-                               <a class="calendar__day" href="{{ path('newLesson',{'id1':date}) }}">{{ dateD }}</a>
+                               <a class="calendar__day" href="{{ path('newLesson',{'date':date}) }}">{{ dateD }}</a>
 
                                 {% if days[date] is defined %}
                                     {% set eventByDay = days[date] %}
                                     {% for event in eventByDay %}
                                         {% if app.user.isInstructor %}
-                                            <div class="calendar__event">{{ event.idl.startAt|date('H:i') }} -<a href="{{ path('editLesson',{'id1':event.idl.id}) }} " > {{ event.idc.name}} {{ event.idc.firstName}} {% set hours = event.idl.startAt.diff(event.idl.endAt) %} {{ hours|date('h') }} Hours</a></div>
+                                            <div class="calendar__event">{{ event.idl.startAt|date('H:i') }} -<a href="{{ path('editLesson',{'id':event.idl.id}) }} " > {{ event.idc.name}} {{ event.idc.firstName}} {% set hours = event.idl.startAt.diff(event.idl.endAt) %} {{ hours|date('h') }} Hours</a></div>
                                         {% else %}
-                                            <div class="calendar__event">{{ event.idl.startAt|date('H:i') }} -<a href="{{ path('editLesson',{'id1':event.idl.id}) }} " > {{ event.idl.status}} Request</a></div>
+                                            <div class="calendar__event">{{ event.idl.startAt|date('H:i') }} -<a href="{{ path('editLesson',{'id':event.idl.id}) }} " > {{ event.idl.status}} Request</a></div>
                                         {% endif %}
                                     {% endfor %}
                                 {% endif %}

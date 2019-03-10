@@ -28,6 +28,26 @@ class UserRepository extends ServiceEntityRepository
             ;
     }
 
+    public function countCandidate()
+    {
+        return $this->createQueryBuilder('u')
+            ->select('count(u)')
+            ->andWhere('u.isInstructor = false')
+            ->getQuery()
+            ->getSingleScalarResult()
+            ;
+    }
+
+    public function countInstructor()
+    {
+        return $this->createQueryBuilder('u')
+            ->select('count(u)')
+            ->andWhere('u.isInstructor = true')
+            ->getQuery()
+            ->getSingleScalarResult()
+            ;
+    }
+
     public function findByIda($user)
     {
         return $this->createQueryBuilder('u')
@@ -37,6 +57,58 @@ class UserRepository extends ServiceEntityRepository
             ->getOneOrNullResult()
             ;
     }
+
+    public function countCandidateByMonth($date)
+    {
+        return $this->createQueryBuilder('u')
+            ->select('count(u)')
+            ->andWhere('u.isInstructor = false')
+            ->andWhere('u.IsAdmin = false')
+            ->andWhere('month(u.registerAt) = month(:start) ')
+            ->andWhere('year(u.registerAt) = year(:start) ')
+            ->setParameter('start', $date)
+            ->getQuery()
+            ->getSingleScalarResult()
+            ;
+    }
+    public function findCandidateByMonth($date)
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.isInstructor = false')
+            ->andWhere('u.IsAdmin = false')
+            ->andWhere('month(u.registerAt) = month(:start) ')
+            ->andWhere('year(u.registerAt) = year(:start) ')
+            ->setParameter('start', $date)
+            ->getQuery()
+            ->getScalarResult()
+            ;
+    }
+
+    public function getStatusCode()
+    {
+        return $this->createQueryBuilder('u')
+            ->select('count(u)')
+            ->andWhere('u.isInstructor = false')
+            ->andWhere('u.IsAdmin = false')
+            ->andWhere("u.status = 'code' ")
+            ->getQuery()
+            ->getSingleScalarResult()
+            ;
+    }
+
+    public function getStatusDriving()
+    {
+        return $this->createQueryBuilder('u')
+            ->select('count(u)')
+            ->andWhere('u.isInstructor = false')
+            ->andWhere('u.IsAdmin = false')
+            ->andWhere("u.status = 'driving'")
+            ->getQuery()
+            ->getSingleScalarResult()
+            ;
+    }
+
+
 
     // /**
     //  * @return Users[] Returns an array of Users objects

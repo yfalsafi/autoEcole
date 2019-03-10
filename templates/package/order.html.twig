@@ -39,19 +39,18 @@
         $( document ).ready(function() {
             $(".jsConfirm").click(function () {
                 $.ajax({
-                    url: Routing.generate('candidate_purchase', {id: $(this).data('confirm'),
-                    success: function(result){
-                        console.log(result);
-                        if (result == 'ok') {
-                            console.log('in');
-                            $("#modal-title").hide()
+                    url: Routing.generate('candidate_purchase', {id: $(this).data('confirm')}),
+                    success: function(data){
+                        if (data.resultat === 'ok') {
+                            console.log('tt ' + data.resultat);
+                            $('.modal-backdrop').remove();
+                            $("#dataModal").hide();
                         }
                     }
 
-                }),
-
+                })
             });
-        })})
+        });
 
     </script>
 

@@ -24,17 +24,17 @@
                         <td class="mr-4">{{ planning.idl.startAt|date('H:i')}} </td>
                         <td class="mr-4">{{ planning.idl.endAt|date('H:i')}} </td>
                         <td class="mr-4">
-                            {% if planning.idl.status == 'W'%}
+                            {#{% if planning.idl.status == 'W'%}#}
                                 <div class="jsForm">
                                     <input type="radio" class="jsLessonStatus" name="p{{  planning.idl.id }}" value="A" {% if planning.idl.status == 'A' %} checked="checked" {% endif %} data-lesson="{{ planning.idl.id }}" />Accept
                                     <input type="radio" class="jsLessonStatus" name="p{{  planning.idl.id }}" value="D"{% if planning.idl.status == 'D' %} checked="checked" {% endif %} data-lesson="{{ planning.idl.id }}" />Denied
                                     <input type="radio" class="jsLessonStatus" name="p{{  planning.idl.id }}" value="W"{% if planning.idl.status == 'W' %} checked="checked" {% endif %} data-lesson="{{ planning.idl.id }}" />Pending
                                 </div>
-                            {% elseif planning.idl.status == 'A' %}
-                                <div>Accepted</div>
-                            {% else %}
-                                <div>Denied</div>
-                            {% endif %}
+                            {#{% elseif planning.idl.status == 'A' %}#}
+                                {#<div>Accepted</div>#}
+                            {#{% else %}#}
+                                {#<div>Denied</div>#}
+                            {#{% endif %}#}
                         </td>
                     </tr>
                 {% endfor %}
@@ -59,7 +59,7 @@
                     success: function(result){
                         console.log(result);
                        if (result === 'ok') {
-                           $('.jsForm').remove();
+                           // $('.jsForm').remove();
                        }
                     }
                     //$( "#result" ).load( "verify.asp" );

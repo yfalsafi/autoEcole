@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} {% endblock %}
+
+{% block body %}
+    <section>
+        <div class="container text-center align-content-center">
+            <table align="center" cellspacing="10" cellpadding="5" class="">
+                <thead>
+                <tr>
+                    <th>Package</th>
+                    <th>Price</th>
+                    <th>Date</th>
+                </tr>
+                </thead>
+                {% for purchase in purchases %}
+                    <tr>
+                        <td>{{ purchase.package.title }}</td>
+                        <td>{{ purchase.package.price }}</td>
+                        <td>{{ purchase.buyAt |date('d:m:Y H:i') }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </section>
+
+
+{% endblock %}

@@ -4,9 +4,9 @@
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
         {% block stylesheets %}
-            <link rel="stylesheet" href="{{ asset('build/scss/bootstrap.min.css') }}">
-            <link rel="stylesheet" href="{{ asset('build/scss/agency.min.css') }}">
-            <link rel="stylesheet" href="{{ asset('build/scss/agency.min.css') }}">
+            <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
+            <link rel="stylesheet" href="{{ asset('css/agency.min.css') }}">
+            <link rel="stylesheet" href="{{ asset('css/sb-admin.min.css') }}">
             <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
             <link href='https://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
             <link href='https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
@@ -51,12 +51,12 @@
                         <li class="nav-item">
                             <a class="nav-link js-scroll-trigger" href="">Contact</a>
                         </li>
-                    {% elseif (is_granted("ROLE_CANDIDATE"))  %}
+                    {% elseif (is_granted("ROLE_ADMIN"))  %}
                         <li class="nav-item">
-                            <a class="nav-link js-scroll-trigger" href="{{ path('package') }}">Formation</a>
+                            <a class="nav-link js-scroll-trigger" href="{{ path('instructor_request') }}">Request</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link js-scroll-trigger" href="{{ path('user_account') }}">My Account</a>
+                            <a class="nav-link js-scroll-trigger" href="{{ path('admin') }}">Dashboard</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link js-scroll-trigger" href="{{ path('planning') }}">Planning</a>
@@ -74,6 +74,21 @@
                         <li class="nav-item">
                             <a class="nav-link js-scroll-trigger" href="{{ path('planning') }}">Planning</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link js-scroll-trigger" href="/logout">Logout</a>
+                        </li>
+                    {% elseif (is_granted("ROLE_CANDIDATE"))  %}
+                        <li class="nav-item">
+                            <a class="nav-link js-scroll-trigger" href="{{ path('package') }}">Formation</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link js-scroll-trigger" href="{{ path('user_account') }}">My Account</a>
+                        </li>
+                        {% if(app.user.status == 'driving') %}
+                            <li class="nav-item">
+                                <a class="nav-link js-scroll-trigger" href="{{ path('planning') }}">Planning</a>
+                            </li>
+                        {% endif %}
                         <li class="nav-item">
                             <a class="nav-link js-scroll-trigger" href="/logout">Logout</a>
                         </li>

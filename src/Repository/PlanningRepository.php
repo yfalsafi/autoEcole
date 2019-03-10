@@ -95,6 +95,20 @@ class PlanningRepository extends ServiceEntityRepository
             ;
     }
 
+    public function findByIdLessonWithPlanning($lesson)
+    {
+        return $this->createQueryBuilder('p')
+            ->select('p')
+            ->join('p.idl', 'l')
+            ->addSelect('l')
+            ->andWhere('p.idl = l.id')
+            ->andWhere('l.id = :lesson')
+            ->setParameter('lesson', $lesson)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
     public function findNbLessonByUser($user,$date)
     {
         return $this->createQueryBuilder('p')

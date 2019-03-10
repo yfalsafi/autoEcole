@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Instructors Details{% endblock %}
+
+{% block body %}
+    <section>
+        <div class="wrapper">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <i class="fas fa-table"></i>
+                    Instructors</div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                            <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>email</th>
+                                <th>Address</th>
+                                <th>Hiring</th>
+                                <th>Hours Done</th>
+                                <th>Earning money </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for instructor in numbers.instructors %}
+                                <tr>
+                                    <td>{{ instructor.name }} {{  instructor.firstName }} </td>
+                                    <td>{{ instructor.email }}</td>
+                                    <td>{{ instructor.address }} {{ instructor.city }}</td>
+                                    <td>{{ instructor.registerAt|date('d-m-Y') }}</td>
+                                    <td>{{ instructor.hoursDone }}</td>
+                                    <td>
+                                        {% for money in numbers.turnoverByInstructor %}
+                                            {% if money.name == instructor.name %}
+                                                ${{ money[1] }}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% endblock %}
+
+{% block body %}
+
+    <section>
+        <div class="wrapper">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <i class="fas fa-table"></i>
+                    New Candidates</div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                            <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>email</th>
+                                <th>Address</th>
+                                <th>Status</th>
+                                <th>Register</th>
+                                <th>Hours Done</th>
+                                <th>Money spent</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for candidate in numbers.registration %}
+                                <tr>
+                                    <td>{{ candidate.name }} {{  candidate.firstName }} </td>
+                                    <td>{{ candidate.email }}</td>
+                                    <td>{{ candidate.address }} {{ candidate.city }}</td>
+                                    <td>{{ candidate.status }}</td>
+                                    <td>{{ candidate.registerAt|date('d-m-Y') }}</td>
+                                    <td>{{ candidate.hoursDone }}</td>
+                                    <td>
+                                        {% for paid in numbers.moneySpent %}
+                                            {% if paid.name == candidate.name %}
+                                                ${{ paid[1] }}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
