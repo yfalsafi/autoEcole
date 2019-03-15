@@ -1,0 +1,82 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Code online{% endblock %}
+
+{% block body %}
+<section>
+    <div class="container">
+            <div class="quiz text-center mt-4">
+                <img src="../{{ codes[0].image }}">
+                <h4>{{ codes[0].question }}</h4>
+                <div class="response">
+                    <div class="checkbox" ><label><input type="checkbox" value="A" data-code="{{ codes[0].id }}">A: {{ codes[0].a }}</label></div>
+                    <div class="checkbox"><label><input type="checkbox" value="B" data-code="{{ codes[0].id }}">B: {{ codes[0].b }}</label></div>
+                    {% if codes[0].c %}
+                        <div class="checkbox"><label><input type="checkbox" value="C" data-code="{{ codes[0].id }}">C: {{ codes[0].c }}</label></div>
+                    {% endif %}
+                    {% if codes[0].d %}
+                        <div class="checkbox"><label><input type="checkbox" value="D" data-code="{{ codes[0].id }}">D: {{ codes[0].d }}</label></div>
+                    {% endif %}
+                </div>
+                <button type="submit" id="jsSend" class="btn btn-primary">Submit</button>
+            </div>
+
+    </div>
+</section>
+{% endblock %}
+    {% block javascripts %}
+        {{ parent() }}
+
+        <script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
+        <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+
+        <script>
+            $( document ).ready(function() {
+                $("#jsSend").click(function () {
+                    const letter = ['A','B','C','D','E'];
+                    var checkbox_value = "";
+                    $(":checkbox").each(function () {
+                        var ischecked = $(this).is(":checked");
+                        if (ischecked) {
+                            if(checkbox_value ==="")
+                                checkbox_value += $(this).val();
+                            else
+                                checkbox_value += ';'+$(this).val();
+                            console.log(checkbox_value);
+                        }
+                    });
+
+                    $.ajax({
+                        url: Routing.generate('check_code', {id: $(":checkbox:first").data('code'), a: checkbox_value }),
+                        success: function(data){
+
+                            if(data[0].question != '' && data[0].question != null)
+                            {
+                                $(".quiz img").attr('src', data[0].img);
+                                $(".quiz>h4:first").html(data[0].question);
+                                $('.response').html('');
+                                data[0].response.forEach(function (item, index) {
+                                    if(item != '' && item != null){
+                                        $('.response').append('<div class="checkbox" ><label><input type="checkbox" value="'+letter[index]+'" data-code="'+data[0].id+'">'+letter[index]+': '+item+'</label></div>')
+                                    }
+                                })
+                            }else{
+                                $(".quiz img").attr('src', data[0].img);
+                                $(".quiz img").addClass('result');
+                                $(".quiz>h4:first").html('Vous avez fait '+data[0].nbErrors + ' erreurs');
+                                console.log(data);
+                                $('.response').html('');
+                                $('#jsSend').html('');
+                                console.log($('#jsSend'));
+                                $('#jsSend').append('<a class="btn btn-primary" href="{{ path('home') }}">Home</a>' );
+                                console.log($('#jsSend'));
+                            }
+
+                        },
+                    });
+                });
+            });
+        </script>
+
+    {% endblock %}
+

@@ -6,18 +6,19 @@
         <section>
             <div class="d-flex flex-row align-items-center justify-content-between">
                 <h1>{{ month_string }}</h1>
-                <div>
+                <div><h4>{% if user.isinstructor %} You have {{ result }} candidates{% else %} {{ result }} Hours Left   {% endif %}</h4></div>
+                <div class="">
                     {% set previousMonth= id-1 %}
                     {% set nextMonth= id+1%}
                     {% if(previousMonth<1) %}
-                        <a href="{{ path('planningByM',{'id':12,'idy':idy-1} ) }}" class="btn btn-primary">&lt;</a>
-                        <a href="{{ path('planningByM',{'id':id+1,'idy':idy}) }}" class="btn btn-primary">&gt;</a>
+                        <a href="{{ path('planningByM',{'month':12,'year':idy-1} ) }}" class="btn btn-primary">&lt;</a>
+                        <a href="{{ path('planningByM',{'month':id+1,'year':idy}) }}" class="btn btn-primary">&gt;</a>
                     {% elseif(nextMonth>12) %}
-                        <a href="{{ path('planningByM',{'id':id-1,'idy':idy}) }}" class="btn btn-primary">&lt;</a>
-                        <a href="{{ path('planningByM',{'id':1,'idy':idy+1} ) }}" class="btn btn-primary">&gt;</a>
+                        <a href="{{ path('planningByM',{'month':id-1,'year':idy}) }}" class="btn btn-primary">&lt;</a>
+                        <a href="{{ path('planningByM',{'month':1,'year':idy+1} ) }}" class="btn btn-primary">&gt;</a>
                     {% else %}
-                        <a href="{{ path('planningByM',{'id':id-1,'idy':idy} ) }}" class="btn btn-primary">&lt;</a>
-                        <a href="{{ path('planningByM',{'id':id+1,'idy':idy}) }}" class="btn btn-primary">&gt;</a>
+                        <a href="{{ path('planningByM',{'month':id-1,'year':idy} ) }}" class="btn btn-primary">&lt;</a>
+                        <a href="{{ path('planningByM',{'month':id+1,'year':idy}) }}" class="btn btn-primary">&gt;</a>
                     {% endif %}
 
                 </div>
@@ -45,7 +46,7 @@
                                 {% if days[date] is defined %}
                                     {% set eventByDay = days[date] %}
                                     {% for event in eventByDay %}
-                                        {% if app.user.isInstructor %}
+                                        {% if app.user.isInstructor %}Hors agglomération, vous avez l'obligation de rouler avec les feux de croisement lorsqu'il neige. Les feux de brouillard avant ou arrière sont facultatifs.
                                             <div class="calendar__event">{{ event.idl.startAt|date('H:i') }} -<a href="{{ path('editLesson',{'id':event.idl.id}) }} " > {{ event.idc.name}} {{ event.idc.firstName}} {% set hours = event.idl.startAt.diff(event.idl.endAt) %} {{ hours|date('h') }} Hours</a></div>
                                         {% else %}
                                             <div class="calendar__event">{{ event.idl.startAt|date('H:i') }} -<a href="{{ path('editLesson',{'id':event.idl.id}) }} " > {{ event.idl.status}} Request</a></div>

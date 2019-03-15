@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Code List{% endblock %}
+
+{% block body %}
+    <section>
+        <div class="container">
+            {% if exam %}
+                <button type="submit" id="jsSend" class="btn btn-primary">Ask date for exam</button>
+            {% endif %}
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Nb Error</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for try in pass %}
+                    <tr>
+                        <td>{{ try.passAt|date('d-m-Y H:i') }} </td>
+                        <td class="{% if try.errors > 5 %} alert-danger alert {% else %} alert-success alert {% endif %}">{{ try.errors }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+
+{% endblock %}

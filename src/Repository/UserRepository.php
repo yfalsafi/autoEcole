@@ -38,6 +38,18 @@ class UserRepository extends ServiceEntityRepository
             ;
     }
 
+    public function countCandidateByInstructor($instructor)
+    {
+        return $this->createQueryBuilder('u')
+            ->select('count(u)')
+            ->andWhere('u.isInstructor = false')
+            ->andWhere('u.instructor = :instructor')
+            ->setParameter('user', $instructor)
+            ->getQuery()
+            ->getSingleScalarResult()
+            ;
+    }
+
     public function countInstructor()
     {
         return $this->createQueryBuilder('u')

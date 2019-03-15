@@ -5,66 +5,23 @@ namespace App\Controller;
 use App\Entity\Car;
 use App\Entity\Purchase;
 use App\Entity\User;
-use App\Service\candidateInformations;
+use App\Service\candidateInformation;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
 class AdminController extends AbstractController
 {
 
-    public function getInstructorsInformation()
-    {
-        $repoUser = $this->getDoctrine()->getRepository(User::class);
-
-
-        $numbers['nbInstructor'] = $repoUser->countInstructor();
-        $numbers['instructors'] = $repoUser->findBy([ 'isInstructor' => true]);
-
-
-
-        return $numbers;
-    }
-
-    public function getCarsInformation()
-    {
-        $repoCar = $this->getDoctrine()->getRepository(Car::class);
-
-        $numbers['nbCar'] = $repoCar->countCar();
-        $numbers['Cars'] = $repoCar->findAll();
-
-        return $numbers;
-    }
-
-    public function getPurchaseInformation()
-    {
-        $repoPurchase = $this->getDoctrine()->getRepository(Purchase::class);
-
-        $numbers['turnoverByInstructor'] = $repoPurchase->findTurnOverByInstructorAndMonth(new \DateTime());
-        for($i=4;$i>=0;$i--)
-        {
-            $numbers['turnoverByMonth'][$i] = $repoPurchase->findTurnOverByMonth(new \DateTime(sprintf('-%d months',$i)));
-            if(!isset($numbers['turnoverByMonth'][$i]))
-            {
-                $numbers['turnoverByMonth'][$i]=0;
-                dump($repoPurchase->findTurnOverByMonth(new \DateTime(sprintf('-%d months',$i))));
-            }
-
-        }
-        $numbers['moneySpent'] = $repoPurchase->findMoneySpent(new \DateTime());
-
-        return $numbers;
-    }
-
     /**
      * @Route("/admin/dashboard", name="admin")
      */
-    public function index(candidateInformations $candidates)
+    public function index(candidateInformation $candidates)
     {
 
         $numbers = $candidates->getCandidatesInformation();
-        $numbers += $this->getInstructorsInformation();
-        $numbers += $this->getPurchaseInformation();
-        $numbers += $this->getCarsInformation();
+        $numbers += $candidates->getInstructorsInformation();
+        $numbers += $candidates->getPurchaseInformation();
+        $numbers += $candidates->getCarsInformation();
 
         //dd($number);
 
@@ -79,9 +36,9 @@ class AdminController extends AbstractController
     /**
      * @Route("/admin/dashboard/instructor", name="admin_instructor_details")
      */
-    public function instructorDetails()
+    public function instructorDetails(candidateInformation $candidates)
     {
-        $instructor = $this->getInstructorsInformation();
+        $instructor = $candidates->getInstructorsInformation();
 
 
         return $this->render('admin/instructor.html.twig', [
@@ -92,7 +49,7 @@ class AdminController extends AbstractController
     /**
      * @Route("/admin/dashboard/newCandidate", name="admin_new_candidate_details")
      */
-    public function newCandidates(candidateInformations $candidates)
+    public function newCandidates(candidateInformation $candidates)
     {
         return $this->render('admin/newCandidates.html.twig', [
             'numbers' =>$candidates->getCandidatesInformation()
@@ -102,9 +59,9 @@ class AdminController extends AbstractController
     /**
      * @Route("/admin/dashboard/cars", name="admin_cars_details")
      */
-    public function cars()
+    public function cars(candidateInformation $candidates)
     {
-        $cars = $this->getCarsInformation();
+        $cars = $candidates->getCarsInformation();
 
 
         return $this->render('admin/car.html.twig', [
@@ -112,6 +69,5 @@ class AdminController extends AbstractController
         ]);
     }
 }
-
 
 

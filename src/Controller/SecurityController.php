@@ -26,19 +26,17 @@ class SecurityController extends BaseController
      * @param TokenStorageInterface $security
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function registration(Request $request, UserManagerInterface $userManager, EventDispatcherInterface $dispatcher,TokenStorageInterface $security)
+    public function registration(Request $request, UserManagerInterface $userManager, EventDispatcherInterface $dispatcher, TokenStorageInterface $security)
     {
         /** @var User $user */
         $user = $userManager->createUser();
-        $form= $this->createForm(RegistrationType::class,$user);
+        $form = $this->createForm(RegistrationType::class, $user);
         $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid())
-        {
-            if($request->get('_route') == "registration_instructor")
-            {
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($request->get('_route') == "registration_instructor") {
                 $user->setRoles(["ROLE_INSTRUCTOR"]);
                 $user->setIsInstructor(true);
-            }else{
+            } else {
                 $user->addRole("ROLE_CANDIDATE");
                 $user->setIsInstructor(false);
             }
@@ -52,7 +50,7 @@ class SecurityController extends BaseController
             return $this->redirectToRoute('home');
         }
         return $this->render('bundles/FOSUserBundle/Registration/register.html.twig', [
-            'form' =>$form->createView()
+            'form' => $form->createView()
         ]);
     }
 

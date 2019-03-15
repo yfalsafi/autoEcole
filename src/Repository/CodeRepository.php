@@ -1,0 +1,48 @@
+<?php
+
+namespace App\Repository;
+
+use App\Entity\Code;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Symfony\Bridge\Doctrine\RegistryInterface;
+
+/**
+ * @method Code|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Code|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Code[]    findAll()
+ * @method Code[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ */
+class CodeRepository extends ServiceEntityRepository
+{
+    public function __construct(RegistryInterface $registry)
+    {
+        parent::__construct($registry, Code::class);
+    }
+
+    // /**
+    //  * @return Code[] Returns an array of Code objects
+    //  */
+
+    public function findTwoById($value)
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.id IN (:val)')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getArrayResult()
+        ;
+    }
+
+
+    /*
+    public function findOneBySomeField($value): ?Code
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.exampleField = :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
+    */
+}

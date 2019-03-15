@@ -20,10 +20,6 @@ use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 
 class LessonController extends AbstractController
 {
-    private $oppening = '07:00';
-    private $closing = '21:00';
-    private $limit = '02:00';
-
 
     /**
      * @Route("/lesson/new", name="addRequest")
@@ -69,25 +65,17 @@ class LessonController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-
-            $errors = $this->CheckDatetime($lesson);
-            if (!$errors) {
-                $month = $lesson->getStartAt()->format('m');
-                $year = $lesson->getStartAt()->format('Y');
-                $lesson->setStatus('W');
-                $manager->persist($lesson);
-                dump($edit);
-                if (!$edit) {
-                    $planning = new Planning();
-                    $planning->setIdi($user->getInstructor());
-                    $planning->setIdc($user);
-                    $planning->setIdl($lesson);
-                    $manager->persist($planning);
-                }
-                $manager->flush();
-                return $this->redirectToRoute('planning');
+            $lesson->setStatus('W');
+            $manager->persist($lesson);
+            if (!$edit) {
+                $planning = new Planning();
+                $planning->setIdi($user->getInstructor());
+                $planning->setIdc($user);
+                $planning->setIdl($lesson);
+                $manager->persist($planning);
             }
-
+            $manager->flush();
+            return $this->redirectToRoute('planning');
         }
         return $this->render('planning/addRequest.html.twig', [
             'errors' => $errors,
@@ -99,42 +87,6 @@ class LessonController extends AbstractController
 
     }
 
-    /**
-     * Check if the form is Valid and return the error if they have no error, return an empty array
-     * @param Lesson $lesson
-     * @return array|string
-     */
-    public function CheckDatetime(Lesson $lesson)
-    {
-//        $errors = array();
-//        $start = $lesson->getStartAt()->format('Y-m-d');
-//        $end = $lesson->getEndAt()->format('Y-m-d');
-//        $hoursLeft = $this->getUser()->getHoursLeft();
-//        if (!$hoursLeft)
-//            $hoursLeft = 0;
-//        $repo = $this->getDoctrine()->getRepository(Lesson::class);
-//        $result = $repo->findByDateAndId($this->getUser(), $this->getUser()->getInstructor(), $start, $end);
-//
-//        if ($start != $end)
-//            $errors[] = 'The Beginning and the end must be at the same day';
-//        if ($lesson->getStartAt()->format('N') == 6 || $lesson->getStartAt()->format('N') == 7)
-//            $errors[] = "Can't Take hours during the Week end";
-//        $start = $lesson->getStartAt()->format('H:i');
-//        $end = $lesson->getEndAt()->format('H:i');
-//        if (strtotime($start) < strtotime($this->oppening) || strtotime($start) > strtotime($this->closing))
-//            $errors[] = 'The start doesn\'t respect the  opening hours 7h -> 21h';
-//        if (strtotime($end) > strtotime($this->closing))
-//            $errors[] = 'The end doesn\'t respect the  opening hours 7h -> 21h';
-//        if (strtotime(date("H:i", strtotime($start) + strtotime($this->limit))) < strtotime($end))
-//            $errors[] = "Can‘t take more than 2 hours in row";
-//        if ($hoursLeft - date('H', strtotime($end) - strtotime($start)) < 0)
-//            $errors[] = "You don't have enough hours. You have " . $hoursLeft . " hours left.";
-//        $start = $lesson->getStartAt()->format('i');
-//        $end = $lesson->getEndAt()->format('i');
-//        if ($end != $start || $start != 0 && $start != 30)
-//            $errors[] = "You can only reserve 1 or 2 hours ";
-//        return $errors;
-    }
 
     /**
      * @Route("/delete/{id}", name="deleteLesson")
@@ -143,7 +95,7 @@ class LessonController extends AbstractController
     {
         $repo = $this->getDoctrine()->getRepository(Planning::class);
         $planning = $repo->findOneByIdl($lesson);
-        if ($planning->getIdC() == $this->getUser()->getIdUser()) {
+        if ($planning->getIdC()->getId() == $this->getUser()->getId()) {
             $manager->remove($planning);
             $manager->remove($lesson);
             $manager->flush();
@@ -154,86 +106,6 @@ class LessonController extends AbstractController
         ]);
     }
 
-    /**
-     * Insert Data on Planning table
-     * @param Lesson $lesson
-     * @param User $user
-     * @param $repo
-     */
-    public function setPlanning(Lesson $lesson, User $user, $repo, ObjectManager $manager)
-    {
-        $planning = new Planning();
-        $planning->setIdc($user->getId());
-        $planning->setIdl($lesson->getIdl());
-        $result = $repo->findOneByIdUser($user->getId());
-
-        $planning->setIdi($result->getIdI());
-        $manager->persist($planning);
-        $manager->flush();
-    }
-
-
-    /* public function newLesson($id,Request $request, ObjectManager $manager)
-     {
-
-         $user= $this->getUser();
-         if($user->getInstructor()== null){
-             return $this->redirectToRoute('set_instructor');
-         }
-
-         $lesson= new Lesson();
-
-         $errors=array();
-         $form= $this->createFormBuilder($lesson)
-             ->add('startAt',DateTimeType::class, array(
-                 'years' => array('2019')))
-             ->add('endAt',DateTimeType::class, array(
-                 'years' => array('2019')))
-             ->getForm();
-
-         $form->handleRequest($request);
-         if($form->isSubmitted() && $form->isValid())
-         {
-
-             $errors = $this->CheckDatetime($lesson);
-             if(!$errors)
-             {
-                 $planning =new Planning();
-                 $month =$lesson->getStartAt()->format('m');
-                 $year =$lesson->getStartAt()->format('Y');
-
-                 $lesson->setStatus('W');
-
-
-                 $planning->setIdi($user->getInstructor());
-                 $planning->setIdc($user);
-                 $planning->setIdl($lesson);
-                 dump($lesson);
-                 dump($planning);
-
-                 try{
-                     $manager->persist($lesson);
-                     $manager->persist($planning);
-                     $manager->flush();
-                 }catch (\Exception $e){
-                     $errors= $e->getMessage();
-                 }
-
-
-  //               return $this->redirectToRoute('planningByM');
-             }
-
-         }
-         return $this->render('planning/addRequest.html.twig', [
-             'id'=>$id,
-             'errors'=>$errors,
-             'lesson'=>$lesson,
-             'form' =>$form->createView(),
-             'editMode'=>$lesson->getId()!== null,
-         ]);
-
-
-     }*/
 
     /**
      * @param $id

@@ -22,33 +22,28 @@ class PurchaseController extends AbstractController
     {
         $repo = $this->getDoctrine()->getRepository(Package::class);
         $package = $repo->findOneBy([
-            'id'=>$id
+            'id' => $id
         ]);
 
         $purchase = new Purchase();
         $purchase->setBuyAt(new \DateTime())
             ->setPackage($package)
             ->setUser($this->getUser());
-        if(!$package->getIsPackage())
-        {
+        if (!$package->getIsPackage()) {
             $purchase->setQuantity($request->query->get('quantity'));
-        }else
-        {
+        } else {
             $purchase->setQuantity(1);
         }
-        if(!$this->getUser()->getHoursLeft())
-        {
+        if (!$this->getUser()->getHoursLeft()) {
             $this->getUser()->setHoursLeft($package->getNbHours());
-        }
-        else
-        {
+        } else {
             $this->getUser()->setHoursLeft($this->getUser()->getHoursLeft() + $package->getNbHours());
         }
         $manager->persist($purchase);
         $manager->persist($this->getUser());
         $manager->flush();
 
-        return $this->json(['resultat'=>'ok'], 200);
+        return $this->json(['resultat' => 'ok'], 200);
     }
 
     /**

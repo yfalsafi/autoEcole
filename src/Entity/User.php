@@ -103,6 +103,11 @@ class User extends BaseUser
      */
     private $IsAdmin;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Pass", mappedBy="user", orphanRemoval=true)
+     */
+    private $passes;
+
 
 
 
@@ -112,6 +117,7 @@ class User extends BaseUser
         $this->planningsC = new ArrayCollection();
         $this->planningsI = new ArrayCollection();
         $this->purchases = new ArrayCollection();
+        $this->passes = new ArrayCollection();
         // your own logic
     }
 
@@ -348,6 +354,37 @@ class User extends BaseUser
     public function setIsAdmin(?bool $IsAdmin): self
     {
         $this->IsAdmin = $IsAdmin;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Pass[]
+     */
+    public function getPasses(): Collection
+    {
+        return $this->passes;
+    }
+
+    public function addPass(Pass $pass): self
+    {
+        if (!$this->passes->contains($pass)) {
+            $this->passes[] = $pass;
+            $pass->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removePass(Pass $pass): self
+    {
+        if ($this->passes->contains($pass)) {
+            $this->passes->removeElement($pass);
+            // set the owning side to null (unless already changed)
+            if ($pass->getUser() === $this) {
+                $pass->setUser(null);
+            }
+        }
 
         return $this;
     }

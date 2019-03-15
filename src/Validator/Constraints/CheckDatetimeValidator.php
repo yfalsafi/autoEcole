@@ -64,7 +64,7 @@ class CheckDatetimeValidator extends ConstraintValidator
                 ->addViolation();
         }
 
-        if (strtotime(date("H:i", strtotime($startTime) + strtotime(Constant::LIMIT))) < strtotime($endTime))
+        if (strtotime(date("H:i", strtotime($startTime) - strtotime($endTime) )) <= strtotime(Constant::LIMIT))
         {
             $this->context->buildViolation($constraint->hoursInRow)
                 ->addViolation();

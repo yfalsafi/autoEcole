@@ -3,139 +3,66 @@
 namespace App\Controller;
 
 use App\Entity\Planning;
+use App\Service\planningInformation;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\CandidateRepository;
 use Doctrine\ORM\EntityRepository;
 use App\Entity\Lesson;
+use App\Entity\Constant;
 
 
 class PlanningController extends AbstractController
 {
 
-    public $days= ['Lundi', 'Mardi','Mercredi', 'Jeudi','Vendredi', 'Samedi', 'Dimanche'];
+    public $days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
 
-    private $month;
-    private $year;
-
-
-    /**
-     * Return First Day
-     * @return \DateTime
-     */
-    public function getFirstDay(): \DateTime{
-        return new \DateTime("{$this->year}-{$this->month}-01");
-    }
-
-    /**
-     * return weeks in month
-     * @return int
-     */
-    public function getWeeks(): int {
-        $date=new \DateTime();
-        if($this->month== null){
-            $this->month= $date->format('m');
-        }
-        $start = $this->getFirstDay();
-        $end = (clone $start)->modify('+1 month -1 day');
-        $startWeek= intval($start->format('W'));
-        $endWeek= intval($end->format('W'));
-        if($endWeek === 1)
-            $endWeek=intval((clone $end)->modify('-7 days')->format('W')) +1;
-        $weeks= $endWeek - $startWeek +1;
-        if($weeks < 0)
-            $weeks = intval($end->format('W'));
-
-        return $weeks;
-    }
-
-    /**
-     * Return all the hours take between this time
-     * @param \DateTime $start
-     * @param \DateTime $end
-     * @return array
-     */
-    public function getEventBetween(\DateTime $start, \DateTime $end):array{
-
-        return [];
-
-    }
 
     /**
      * @Route("/planning", name="planning")
-     * @Route("/planning/{id}/{idy}", name="planningByM")
+     * @Route("/planning/{month}/{year}", name="planningByM")
      */
-    public function index($id =null,$idy = null)
+    public function index($month = null, $year = null, planningInformation $planningInformation)
     {
-        $date=new \DateTime();
-        if($this->month== null){
-            $this->month= $date->format('m');
+        $date = new \DateTime();
+        if ($month == null) {
+            $month = $date->format('m');
         }
-        if($id && !$idy)
-        {
-            $test= \DateTime::createFromFormat('m',$id);
-            $month = $test->format('F');
-            $idy=$date->format('Y');
+        dump($month);
+        if ($month && !$year) {
+            $test = \DateTime::createFromFormat('m', $month);
+            $monthString = $test->format('F');
+            $idy = $date->format('Y');
+        } else if ($month && $year) {
+            $test = \DateTime::createFromFormat('m', $month);
+            $monthString = $test->format('F');
+        } else {
+            $test = \DateTime::createFromFormat('m', date('m'));
+            $monthString = $date->format('F');
+            $idy = $date->format('Y');
         }
-        else if($id && $idy){
-            $test= \DateTime::createFromFormat('m',$id);
-            $month=\DateTime::createFromFormat('m',$id.'-'.$idy);
-        }
-        else
-        {
-            $test= \DateTime::createFromFormat('m',date('m'));
-            $month = $date->format('F');
-            $idy= $date->format('Y');
-        }
-        $this->year=$idy;
-        $month_int = $test->format('m');
-        $user=$this->getUser();
-        $start = $this->getFirstDay();
-        $start = $start->format('N') === 1 ? $start : $this->getFirstDay()->modify('last monday');
-        $end = (clone $start)->modify('+'.(6 + 7 * ($this->getWeeks() -1)) .'days');
-        //$hours = $month->getEventBetween($start,$end,1);
-        $repo= $this->getDoctrine()->getRepository(Planning::class);
-        $days=[];
-        if($this->getUser()->getIsInstructor())
-        {
-            $events = $repo->findAllInstructorHourBetween($user->getId(),$start,$end);
-        }else
-        {
-            $events = $repo->findAllCandidateHourBetween($user->getId(),$start,$end);
-        }
-
-
-        $isToday= date('Y-m-d');
-        dump($days);
-        foreach ($events as $event){
-            $date= $event->getIdl()->getStartAt()->format('Y-m-d');
-            if(isset($days[$date]))
-            {
-                $days[$date][]= $event;
-            }
-            else
-            {
-                $days[$date][] =$event;
-            }
-
-
-
-        }
-        dump($days);
+        $start = $planningInformation->getFirstDay($month, $year);
+        dump($start, $start->format('N'));
+        $start = $start->format('N') === "1" ? $start : $planningInformation->getFirstDay($month, $year)->modify('last monday');
+        dump($start);
+        $end = (clone $start)->modify('+' . (6 + 7 * ($planningInformation->getWeeks() - 1)) . 'days');
+        $days = $planningInformation->getEvent($this->getUser(), $start, $end);
+        $result = $planningInformation->getUserInformation($this->getUser());
         return $this->render('planning/index.html.twig', [
-            'id' => $id,
-            'isToday' => $isToday,
-            'idy' => $idy,
+            'user' => $this->getUser(),
+            'id' => $month,
+            'isToday' => date('Y-m-d'),
+            'idy' => $year,
             'days' => $days,
             'start' => $start,
-            'weeks' => $this->getWeeks(),
+            'weeks' => $planningInformation->getWeeks(),
             'daysInMonth' => $this->days,
-            'month_string' => $month,
+            'month_string' => $monthString,
+            'result' => $result,
 
         ]);
     }
-
 
 
 }
