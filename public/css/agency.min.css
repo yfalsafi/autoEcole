@@ -73,9 +73,51 @@ input.hidden {
 
     width: 100px;
     height: 100px;
-    border:2px solid #03b1ce ;}
+    border:2px solid #054491 ;}
 .tital{ font-size:16px; font-weight:500;}
 .bot-border{ border-bottom:1px #054491 solid;  margin:5px 0  5px 0}
 .result{
     width: 500px;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: black;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+    float: none;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+    color: white;
+}
+
+/* Add a grey background color to dropdown links on hover */
+.dropdown-content a:hover {
+    background-color: #ddd;
+}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Dropdown button */
+.dropdown .dropbtn {
+    font-size: 16px;
+    border: none;
+    outline: none;
+    color: white;
+    text-transform:uppercase;
+    padding: 14px 16px;
+    background-color: inherit;
+    font-family: Montserrat; /* Important for vertical align on mobile phones */
+    margin: 0; /* Important for vertical align on mobile phones */
 }

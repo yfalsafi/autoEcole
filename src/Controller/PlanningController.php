@@ -33,14 +33,14 @@ class PlanningController extends AbstractController
         if ($month && !$year) {
             $test = \DateTime::createFromFormat('m', $month);
             $monthString = $test->format('F');
-            $idy = $date->format('Y');
+            $year = $date->format('Y');
         } else if ($month && $year) {
             $test = \DateTime::createFromFormat('m', $month);
             $monthString = $test->format('F');
         } else {
             $test = \DateTime::createFromFormat('m', date('m'));
             $monthString = $date->format('F');
-            $idy = $date->format('Y');
+            $year = $date->format('Y');
         }
         $start = $planningInformation->getFirstDay($month, $year);
         dump($start, $start->format('N'));
@@ -49,6 +49,11 @@ class PlanningController extends AbstractController
         $end = (clone $start)->modify('+' . (6 + 7 * ($planningInformation->getWeeks() - 1)) . 'days');
         $days = $planningInformation->getEvent($this->getUser(), $start, $end);
         $result = $planningInformation->getUserInformation($this->getUser());
+        if($this->getUser()->getHoursDone() > 19){
+            $exam = true;
+        }else{
+            $exam = false;
+        }
         return $this->render('planning/index.html.twig', [
             'user' => $this->getUser(),
             'id' => $month,
@@ -60,6 +65,7 @@ class PlanningController extends AbstractController
             'daysInMonth' => $this->days,
             'month_string' => $monthString,
             'result' => $result,
+            'exam' => $exam,
 
         ]);
     }

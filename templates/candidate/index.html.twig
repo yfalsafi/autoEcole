@@ -7,8 +7,8 @@
         <div class="container">
             <div class="intro-text">
                 <div class="intro-lead-in">Auto Ecole</div>
-                <div class="intro-heading text-uppercase">It's Nice To Meet You</div>
-                <a class="btn btn-primary btn-xl text-uppercase js-scroll-trigger" href="{{ path('exo',{'id':'2019'}) }}">Voir nos offres</a>
+                <div class="intro-heading text-uppercase">Bienvenue</div>
+                <a class="btn btn-primary btn-xl text-uppercase js-scroll-trigger" href="{{ path('package') }}">Voir nos offres</a>
             </div>
         </div>
     </header>
@@ -22,422 +22,45 @@
                     <section id="section-about" class="page-section">
                         <div class="container clearfix">
                             <div class="heading-block center">
-                                <h2>Trois Auto écoles <span>Proche de vous</span></h2>
-                                <span>Nous vous accueillons du lundi au samedi dans toutes nos agences et vous proposons des formations au code de la route :<br><br><strong>Permis B, conduite accompagnée ( AAC ), supervisée, boite automatique, annulation de permis… </strong><br><br>Nous vous offrons aussi la possibilité de profiter de la formation en ligne avec cours multimédia, tests et examens de code sur internet.</span>
+                                <h2> Auto école <span>La Castellane</span></h2>
+                                <span>Bienvenue sur le nouveau site internet de l’Auto-école la Castellane.
+                                    Vous trouverez toutes les informations nécessaires sur les formations au Permis de Conduire : <strong>permis B, conduite accompagnée, conduite supervisée, permis boîte automatique et perfectionnement.</strong>
+                                    Notre école propose une préparation au code de la route avec un enseignant en salle. Nous vous offrons aussi la possibilité de profiter de la formation en ligne avec des tests de code sur internet.</span>
                             </div>
-                            <div class="heading-block center">
-                                <h2 style="border-radius:10px;border:2px solid #207c83;box-sizing:border-box;padding:10px;">Passez votre permis grâce à votre Compte Professionnel Formation (CPF)</h2>
-                                <span>Nos agences sont éligibles Datadock</span>
-                            </div>
-                            <p style="text-align:center;"><a href="https://fr.calameo.com/read/002859354bfb214bec9eb" target="_blank" class="btn btn-danger btn-block btn-lg bgcolor border-color">Plus d’informations</a></p>
+                            <p style="text-align:center;"><a href="{{ path('registration_candidate') }}" target="_blank" class="btn btn-primary bgcolor border-color">Inscription</a></p>
                             <div class="clear"></div>
                             <div class="col-md-6 bottommargin">
                                 <div class="team team-list clearfix"></div>
                             </div>
-                            <div class="col_one_third nobottommargin"></div>
-                            <div class="col_one_third nobottommargin"></div>
-                            <div class="col_one_third nobottommargin col_last"></div>
-                            <div class="clear"></div>
-                            <div class="divider divider-short divider-center"><i class="icon-star3"></i></div>
                         </div>
-                        <div class="container clearfix">
-                            <div class="heading-block center">
-                                <h2>Pourquoi nous choisir</h2>
-                                <span>Quand nos élèves s’expriment </span>
-                            </div>
-                            <div class="clear"></div>
-                        </div></section>
+                    </section>
                 </div>
             </div>
             <div class="bg-light">
                 <section id="section-pricing" class="page-section">
-                    <div class="heading-block center" id="formules"><h2>Nos Formules</h2><span>Vous avez des questions? <br>Nous sommes à votre disposition au <a href="tel:01 77 58 38 80" class="atel">01 77 58 38 80</a></span></div>
+                    <div class="heading-block text-center" id="formules"><h2>Nos Formations</h2></div>
                     <div class="container clearfix">
-                        <div class="pricing bottommargin clearfix">
+                        <div class="d-flex flex-row align-items-center justify-content-between">
+                            {% for i, package in packages if i < 3%}
                             <div class="col-md-3 fadeInLeft animated" data-animate="fadeInLeft">
                                 <div class="pricing-box">
                                     <div class="pricing-title">
-                                        <h3>Permis B 30H</h3>
+                                        <h3>{{ package.title }}</h3>
                                         <span>Forfait valabe 12 mois</span>
                                     </div>
                                     <div class="pricing-price">
-                                        <span class="price-unit">€</span>1389<span class="price-tenure">ttc</span>
+                                        <strong>€ {{ package.price }} TTC</strong>
                                     </div>
                                     <div class="pricing-features">
-                                        <ul>
-                                            <li>Evaluation de départ théorique </li>
-                                            <li><strong>30h de conduite</strong></li>
-                                            <li>Code en salle illimité (6mois)</li>
-                                            <li>Carte boitier suivi test (6mois)</li>
-                                            <li>Code en ligne Pass Rousseau</li>
-                                            <li> Kit pédagogique</li>
-                                            <li> Frais de dossiers</li>
-                                            <li> Frais d’accompagnement
-                                                examen conduite (un passage inclus) </li>
-                                            <li>&nbsp; </li>
-                                        </ul>
+                                        {{ package.content|length > 50 ? package.content|slice(0, 300) ~ '...' : package.content  }}
                                     </div>
                                     <div class="pricing-action">
-                                        <a href="#contact" class="btn btn-primary btn-block btn-lg">Contactez nous</a>
+                                        <a href="#contact" class="mt-2 btn btn-primary btn-block btn-lg">test</a>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-3 fadeInDown animated" data-animate="fadeInDown" data-delay="250">
-                                <div class="pricing-box best-price">
-                                    <div class="pricing-title">
-                                        <h3>Permis B 20h</h3>
-                                        <span>Forfait valable 12 mois</span>
-                                    </div>
-                                    <div class="pricing-price">
-                                        <span class="price-unit">€</span>989<span class="price-tenure">ttc</span>
-                                    </div>
-                                    <div class="pricing-features">
-                                        <ul>
-                                            <li>Evaluation de départ théorique </li>
-                                            <li><strong>20h de conduite</strong></li>
-                                            <li>Code en salle illimité (6mois)</li>
-                                            <li>Carte boitier suivi test (6mois)</li>
-                                            <li>Code en ligne Pass Rousseau</li>
-                                            <li> Kit pédagogique</li>
-                                            <li> Frais de dossiers</li>
-                                            <li> Frais d’accompagnement
-                                                examen conduite (un passage inclus) </li>
-                                            <li>&nbsp; </li>
-                                        </ul>
-                                    </div>
-                                    <div class="pricing-action">
-                                        <a href="#contact" class="btn btn-danger btn-block btn-lg bgcolor border-color">Contactez nous</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <!--<div class="col-md-3" data-animate="fadeInUp" data-delay="500">
-                                <div class="pricing-box">
-                                    <div class="pricing-title">
-                                        <h3>Code illimité</h3>
-                                        <span>Forfait valable 3 mois</span>
-                                    </div>
-                                    <div class="pricing-price">
-                                        <span class="price-unit">&euro;</span>99<span class="price-tenure">ttc</span>
-                                    </div>
-                                    <div class="pricing-features">
-                                        <ul>
-                                            <li>1 code en salle illimité </li>
-                                            <li>Enregistrement Préfecture</li>
-                                            <li> Carte boitier suivi test</li>
-                                            <li> Code en ligne Pass rousseau</li>
-                                            <li>&nbsp; </li>
-                                            <li> &nbsp;</li>
-                                        </ul>
-                                    </div>
-                                    <div class="pricing-action">
-                                        <a href="#contact" class="btn btn-danger btn-block btn-lg">Contactez nous</a>
-                                    </div>
-                                </div>
-                            </div>-->
-                            <div class="col-md-3 fadeInRight animated" data-animate="fadeInRight" data-delay="250">
-                                <div class="pricing-box">
-                                    <div class="pricing-title">
-                                        <h3>Permis B Annulation</h3>
-                                        <span>FORFAIT Valabe 12 mois</span>
-                                    </div>
-                                    <div class="pricing-price">
-                                        <span class="price-unit">€</span>659<span class="price-tenure">ttc</span>
-                                    </div>
-                                    <div class="pricing-features">
-                                        <ul>
-                                            <li>Evaluation de départ théorique </li>
-                                            <li><strong>2h de préparation aux vérifications techniques</strong></li>
-                                            <li><strong>2h de préparation à l’examen</strong></li>
-                                            <li>Code en salle illimité (6mois)</li>
-                                            <li>Carte boitier suivi test (6mois)</li>
-                                            <li> Code en ligne Pass Rousseau</li>
-                                            <li> Kit pédagogique</li>
-                                            <li> Frais de dossier</li>
-                                            <li> Frais d’accompagnement
-                                                examen conduite (un passage inclus)</li>
-                                            <li> &nbsp;</li>
-                                        </ul>
-                                    </div>
-                                    <div class="pricing-action">
-                                        <a href="#contact" class="btn btn-danger btn-block btn-lg">Contactez nous</a>
-                                    </div>
-                                </div>
-                            </div>
+                            {% endfor %}
                         </div>
-                    </div>
-                    <div class="divider divider-short divider-center"><i class="icon-star3"></i></div>
-                    <div class="heading-block center"><h2>Nos Formules Accompagnées et supervisées</h2><span>Vous avez des questions? <br>Nous sommes à votre disposition au <a href="tel:01 77 58 38 80" class="atel">01 77 58 38 80</a></span></div>
-                    <div class="container clearfix">
-                        <div class="pricing bottommargin clearfix">
-                            <div class="col-md-3 fadeInLeft animated" data-animate="fadeInLeft">
-                                <div class="pricing-box">
-                                    <div class="pricing-title">
-                                        <h3>Permis AAC 30H</h3>
-                                        <span><strong>AAC – Accompagnée</strong></span>
-                                        <span>dés 15 ans Forfait valable 36 mois</span>
-                                    </div>
-                                    <div class="pricing-price">
-                                        <span class="price-unit">€</span>1489<span class="price-tenure">ttc</span>
-                                    </div>
-                                    <div class="pricing-features">
-                                        <ul>
-                                            <li>Evaluation de départ théorique </li>
-                                            <li><strong>30h de conduite</strong></li>
-                                            <li>Code en salle illimité (6 mois) </li>
-                                            <li>Carte boitier suivi test (6 mois)</li>
-                                            <li>Code en ligne Pass Rousseau</li>
-                                            <li> 1 rdv fin formation initiale (2h)</li>
-                                            <li> 2 rdv pédagogiques (2h)</li>
-                                            <li> Frais d’accompagnement
-                                                examen conduite (un passage inclus)</li>
-                                            <li> Frais de dossiers</li>
-                                            <li> &nbsp;</li>
-                                        </ul>
-                                    </div>
-                                    <div class="pricing-action">
-                                        <a href="#contact" class="btn btn-danger btn-block btn-lg">Contactez nous</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 fadeInDown animated" data-animate="fadeInDown" data-delay="250">
-                                <div class="pricing-box best-price">
-                                    <div class="pricing-title">
-                                        <h3>Permis AAC 20h</h3>
-                                        <span><strong>AAC – Accompagnée</strong></span>
-                                        <span>dés 15 ans Forfait valable 36 mois</span>
-                                    </div>
-                                    <div class="pricing-price">
-                                        <span class="price-unit">€</span>1159<span class="price-tenure">ttc</span>
-                                    </div>
-                                    <div class="pricing-features">
-                                        <ul>
-                                            <li>Evaluation de départ théorique </li>
-                                            <li><strong>20h de conduite</strong></li>
-                                            <li>Code en salle illimité (6 mois) </li>
-                                            <li>Code en ligne Pass Rousseau (3 mois)</li>
-                                            <li> 1 rdv fin formation initiale (2h)</li>
-                                            <li> 2 rdv pédagogiques (2h)</li>
-                                            <li> Frais d’accompagnement
-                                                examen conduite (un passage inclus)</li>
-                                            <li> Frais de dossiers</li>
-                                            <li> &nbsp;</li>
-                                        </ul>
-                                    </div>
-                                    <div class="pricing-action">
-                                        <a href="#contact" class="btn btn-danger btn-block btn-lg bgcolor border-color">Contactez nous</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 fadeInUp animated" data-animate="fadeInUp" data-delay="500">
-                                <div class="pricing-box">
-                                    <div class="pricing-title">
-                                        <h3>Permis Supervisé 20h</h3>
-                                        <span><strong>Supervisé</strong></span>
-                                        <span>dés 18 ans Forfait valable 12 mois</span>
-                                    </div>
-                                    <div class="pricing-price">
-                                        <span class="price-unit">€</span>1089<span class="price-tenure">ttc</span>
-                                    </div>
-                                    <div class="pricing-features">
-                                        <ul>
-                                            <li>Evaluation de départ théorique </li>
-                                            <li><strong>20h de conduite</strong></li>
-                                            <li>Code en salle illimité (6 mois) </li>
-                                            <li>Carte boitier suivi test (6 mois)</li>
-                                            <li>Code en ligne Pass Rousseau</li>
-                                            <li>Kit pédagogique</li>
-                                            <li> RDV préalable (2h)</li>
-                                            <li> Frais d’accompagnement
-                                                examen conduite (un passage inclus)</li>
-                                            <li> Frais de dossiers</li>
-                                            <li> &nbsp;</li>
-                                        </ul>
-                                    </div>
-                                    <div class="pricing-action">
-                                        <a href="#contact" class="btn btn-danger btn-block btn-lg">Contactez nous</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 fadeInRight animated" data-animate="fadeInRight" data-delay="250">
-                                <div class="pricing-box">
-                                    <div class="pricing-title">
-                                        <h3>Permis Supervisé 30h</h3>
-                                        <span><strong>Supervisé</strong></span>
-                                        <span>dés 18 ans Forfait valable 12 mois</span>
-                                    </div>
-                                    <div class="pricing-price">
-                                        <span class="price-unit">€</span>1459<span class="price-tenure">ttc</span>
-                                    </div>
-                                    <div class="pricing-features">
-                                        <ul>
-                                            <li>Evaluation de départ théorique </li>
-                                            <li><strong>30h de conduite</strong></li>
-                                            <li>Code en salle illimité (6 mois) </li>
-                                            <li>Carte boitier suivi test (6 mois)</li>
-                                            <li>Code en ligne Pass Rousseau</li>
-                                            <li>Kit pédagogique</li>
-                                            <li> RDV préalable (2h)</li>
-                                            <li> Frais d’accompagnement
-                                                examen conduite (un passage inclus)</li>
-                                            <li> Frais de dossiers</li>
-                                            <li> &nbsp;</li>
-                                        </ul>
-                                    </div>
-                                    <div class="pricing-action">
-                                        <a href="#contact" class="btn btn-danger btn-block btn-lg">Contactez nous</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="divider divider-short divider-center"><i class="icon-star3"></i></div>
-                    <div class="heading-block center"><h2>Nos Formules Accelerées et Boite Automatique</h2><span>Vous avez des questions? <br>Nous sommes à votre disposition au <a href="tel:01 77 58 38 80" class="atel">01 77 58 38 80</a></span></div>
-                    <div class="container clearfix">
-                        <div class="pricing bottommargin clearfix">
-                            <div class="col-md-3 fadeInLeft animated" data-animate="fadeInLeft">
-                                <div class="pricing-box">
-                                    <div class="pricing-title">
-                                        <h3>Permis Accelerée 30H</h3>
-                                        <span><strong>Accelerée</strong></span>
-                                        <span> valable 12 mois</span>
-                                    </div>
-                                    <div class="pricing-price">
-                                        <span class="price-unit">€</span>1679<span class="price-tenure">ttc</span>
-                                    </div>
-                                    <div class="pricing-features">
-                                        <p>Contrat de formation Comprenant :</p>
-                                        <ul>
-                                            <li>Evaluation de départ théorique </li>
-                                            <li><strong>30h de conduite (20 jours)</strong></li>
-                                            <li>Code en salle illimité (6 mois)</li>
-                                            <li>Carte boitier suivi test (6 mois)</li>
-                                            <li>Code en ligne Pass Rousseau</li>
-                                            <li> Kit pédagogique</li>
-                                            <li> Frais d’accompagnement
-                                                examen conduite (un passage inclus)</li>
-                                            <li>Frais de dossiers</li>
-                                            <li> &nbsp;</li>
-                                        </ul>
-                                    </div>
-                                    <div class="pricing-action">
-                                        <a href="#contact" class="btn btn-danger btn-block btn-lg">Contactez nous</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 fadeInDown animated" data-animate="fadeInDown" data-delay="250">
-                                <div class="pricing-box best-price">
-                                    <div class="pricing-title">
-                                        <h3>Permis Accelerée 20h</h3>
-                                        <span><strong>Accelerée</strong></span>
-                                        <span>Valable 12 mois</span>
-                                    </div>
-                                    <div class="pricing-price">
-                                        <span class="price-unit">€</span>1379<span class="price-tenure">ttc</span>
-                                    </div>
-                                    <div class="pricing-features">
-                                        <p>Contrat de formation Comprenant :</p>
-                                        <ul>
-                                            <li>Evaluation de départ théorique </li>
-                                            <li><strong>20h de conduite (10 jours)</strong></li>
-                                            <li>Code en salle illimité (6 mois)</li>
-                                            <li>Carte boitier suivi test (6 mois)</li>
-                                            <li>Code en ligne Pass Rousseau</li>
-                                            <li> Kit pédagogique</li>
-                                            <li> Frais d’accompagnement
-                                                examen conduite (un passage inclus)</li>
-                                            <li>Frais de dossiers</li>
-                                            <li> &nbsp;</li>
-                                        </ul>
-                                    </div>
-                                    <div class="pricing-action">
-                                        <a href="#contact" class="btn btn-danger btn-block btn-lg bgcolor border-color">Contactez nous</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 fadeInUp animated" data-animate="fadeInUp" data-delay="500">
-                                <div class="pricing-box">
-                                    <div class="pricing-title">
-                                        <h3>Boite automatique 20h</h3>
-                                        <span><strong>Boite automatique</strong></span>
-                                        <span>Valable 12 mois</span>
-                                    </div>
-                                    <div class="pricing-price">
-                                        <span class="price-unit">€</span>1149<span class="price-tenure">ttc</span>
-                                    </div>
-                                    <div class="pricing-features">
-                                        <p>Contrat de formation Comprenant :</p>
-                                        <ul>
-                                            <li>Evaluation de départ théorique </li>
-                                            <li><strong>20h de conduite</strong></li>
-                                            <li>Code en salle illimité (6 mois)</li>
-                                            <li>Carte boitier suivi test (6 mois)</li>
-                                            <li>Code en ligne Pass Rousseau</li>
-                                            <li> Kit pédagogique</li>
-                                            <li> Frais d’accompagnement
-                                                examen conduite (un passage inclus)</li>
-                                            <li> Frais de dossiers</li>
-                                            <li> &nbsp;</li>
-                                        </ul>
-                                    </div>
-                                    <div class="pricing-action">
-                                        <a href="#contact" class="btn btn-danger btn-block btn-lg">Contactez nous</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 fadeInRight animated" data-animate="fadeInRight" data-delay="250">
-                                <div class="pricing-box">
-                                    <div class="pricing-title">
-                                        <h3>Forfait régularisation</h3>
-                                        <span><strong>Boite-Auto en Boite Manuelle</strong></span>
-                                        <span>Valable 1 an</span>
-                                    </div>
-                                    <div class="pricing-price">
-                                        <span class="price-unit">€</span>399<span class="price-tenure">ttc</span>
-                                    </div>
-                                    <div class="pricing-features">
-                                        <p>Contrat de formation Comprenant :</p>
-                                        <ul>
-                                            <li>Frais de dossiers</li>
-                                            <li><strong>7h de conduite</strong></li>
-                                        </ul>
-                                    </div>
-                                    <div class="pricing-action">
-                                        <a href="#contact" class="btn btn-danger btn-block btn-lg">Contactez nous</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <!--<div class="col-md-3" data-animate="fadeInRight" data-delay="250">
-                                <div class="pricing-box">
-                                    <div class="pricing-title">
-                                        <h3>Boite automatique 13h</h3>
-                                        <span><strong>Offre WEB</strong></span>
-                                        <span>Valable 1 an</span>
-                                    </div>
-                                    <div class="pricing-price">
-                                        <span class="price-unit">&euro;</span>799<span class="price-tenure">ttc</span>
-                                    </div>
-                                    <div class="pricing-features">
-                                        <p>Contrat de formation Comprenant :</p>
-                                        <ul>
-                                            <li>Evaluation de départ théorique </li>
-                                            <li><strong>30h de conduite</strong></li>
-                                            <li>Code en salle illimité (6 mois)</li>
-                                            <li>Carte boitier suivi test (6 mois)</li>
-                                            <li>Code en ligne Pass Rousseau</li>
-                                            <li> Kit pédagogique</li>
-                                            <li> Frais d’accompagnement
-                                            examen conduite (un passage inclus)</li>
-                                            <li> Frais de dossiers</li>
-                                            <li> &nbsp;</li>
-                                        </ul>
-                                    </div>
-                                    <div class="pricing-action">
-                                        <a href="#contact" class="btn btn-danger btn-block btn-lg">Contactez nous</a>
-                                    </div>
-                                </div>
-                            </div>-->
-                        </div>
-                        <a href="#" class="button button-full button-dark center tright"><div class="container clearfix" id="unitaire">Parrainez un ami et beneficez  d’<strong>1 heure offerte pour vous et le parrain</strong> <i class="icon-caret-right" style="top:4px;"></i></div></a><br><br>
                     </div>
                 </section>
 
@@ -592,13 +215,6 @@
                     <div class="clear"></div>
                 </div>
                 <div class="divider divider-short divider-center"><i class="icon-star3"></i></div>
-            </div>
-            <div class="container clearfix">
-                <div class="col_two_third bottommargin-sm col_last">
-                    <div class="heading-block topmargin-sm"><h3> Code </h3></div>
-                    <h4>Etudiez / révisez votre code en ligne, plus de 2500 questions avec réponses commentées en mode thématique, en série ou aléatoire à jour des nouvelles réglementations.</h4>
-                    <p>plus de renseignement au </p>
-                </div>
             </div>
             <div class="divider divider-short divider-center" id="contact"><i class="icon-star3"></i></div>
             <div class="container clearfix">

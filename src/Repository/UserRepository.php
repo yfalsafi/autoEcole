@@ -44,7 +44,7 @@ class UserRepository extends ServiceEntityRepository
             ->select('count(u)')
             ->andWhere('u.isInstructor = false')
             ->andWhere('u.instructor = :instructor')
-            ->setParameter('user', $instructor)
+            ->setParameter('instructor', $instructor)
             ->getQuery()
             ->getSingleScalarResult()
             ;
@@ -117,6 +117,18 @@ class UserRepository extends ServiceEntityRepository
             ->andWhere("u.status = 'driving'")
             ->getQuery()
             ->getSingleScalarResult()
+            ;
+    }
+
+    public function findAllByYear($start,$end)
+    {
+        return $this->createQueryBuilder('c')
+            ->select('count(c)')
+            ->Where('c.registrationAt BETWEEN (:start) AND (:end)')
+            ->setParameter('start', $start)
+            ->setParameter('end', $end)
+            ->getQuery()
+            ->getResult()
             ;
     }
 

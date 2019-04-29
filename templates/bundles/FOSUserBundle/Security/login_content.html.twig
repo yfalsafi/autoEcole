@@ -6,13 +6,11 @@
     <section>
         <div class="container">
             <div class="row">
-                <div class="col-sm-4">
+                <div class="col-sm-4 ml-5">
                     <div class="card">
                         <article class="card-body">
-                            <a href="{{ path("registration_candidate") }}" class="float-right btn btn-outline-primary">Sign up</a>
-                            <h4 class="card-title mb-4 mt-1">Sign in</h4>
-
-
+                            <a href="{{ path("registration_candidate") }}" class="float-right btn btn-outline-primary">S'incrire</a>
+                            <h4 class="card-title mb-4 mt-1">Se connecter</h4>
 
                             {% if error %}
                                 <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
@@ -28,6 +26,7 @@
                                     <input class="form-control" placeholder="******" type="password" id="password" name="_password" required="required" autocomplete="current-password">
                                 </div> <!-- form-group// -->
                                 <div class="form-group">
+                                    <a href="{{ path('fos_user_resetting_request') }}">Mot de passe oublié</a>
                                     <div class="checkbox">
                                         <input type="checkbox" id="remember_me" name="_remember_me" value="on" />
                                         <label for="remember_me">{{ 'Remember_me'|trans }}</label>
@@ -44,6 +43,5 @@
         </div>
 
     </section>
-{{ dump(csrf_token)}}
 
 {% endblock %}

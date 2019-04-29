@@ -34,7 +34,7 @@ class CandidateRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('c')
             ->select('count(c)')
-            ->Where('c.registrationDate BETWEEN (:start) AND (:end)')
+            ->Where('c.registrationAt BETWEEN (:start) AND (:end)')
             ->setParameter('start', $start)
             ->setParameter('end', $end)
             ->getQuery()

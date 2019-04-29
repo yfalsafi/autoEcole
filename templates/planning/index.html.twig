@@ -6,7 +6,9 @@
         <section>
             <div class="d-flex flex-row align-items-center justify-content-between">
                 <h1>{{ month_string }}</h1>
-                <div><h4>{% if user.isinstructor %} You have {{ result }} candidates{% else %} {{ result }} Hours Left   {% endif %}</h4></div>
+                <div>
+                    <h4>{% if user.isinstructor %} Vous avez {{ result }} candidates{% else %} Il vous reste {{ result }} heures {% endif %}</h4>
+                </div>
                 <div class="">
                     {% set previousMonth= id-1 %}
                     {% set nextMonth= id+1%}
@@ -46,10 +48,10 @@
                                 {% if days[date] is defined %}
                                     {% set eventByDay = days[date] %}
                                     {% for event in eventByDay %}
-                                        {% if app.user.isInstructor %}Hors agglomération, vous avez l'obligation de rouler avec les feux de croisement lorsqu'il neige. Les feux de brouillard avant ou arrière sont facultatifs.
-                                            <div class="calendar__event">{{ event.idl.startAt|date('H:i') }} -<a href="{{ path('editLesson',{'id':event.idl.id}) }} " > {{ event.idc.name}} {{ event.idc.firstName}} {% set hours = event.idl.startAt.diff(event.idl.endAt) %} {{ hours|date('h') }} Hours</a></div>
+                                        {% if app.user.isInstructor %}
+                                            <div class="calendar__event">{{ event.idl.startAt|date('H:i') }} -<a href="{{ path('editLesson',{'id':event.idl.id}) }} " > {{ event.idc.name}} {{ event.idc.firstName}} {% set hours = event.idl.startAt.diff(event.idl.endAt) %} {{ hours|date('h') }} Heures</a></div>
                                         {% else %}
-                                            <div class="calendar__event">{{ event.idl.startAt|date('H:i') }} -<a href="{{ path('editLesson',{'id':event.idl.id}) }} " > {{ event.idl.status}} Request</a></div>
+                                            <div class="calendar__event">{{ event.idl.startAt|date('H:i') }} -<a href="{{ path('editLesson',{'id':event.idl.id}) }} " > Demande {{ event.idl.status}} </a></div>
                                         {% endif %}
                                     {% endfor %}
                                 {% endif %}
@@ -59,8 +61,58 @@
                 {% endfor %}
             </table>
 
+            {% if exam %}
+                <div class="text-center mt-4">
+                    <button type="submit" id="jsSend" class="btn btn-primary" data-type="driving">Demander une date d'examen</button>
+                </div>
+            {% endif %}
+
             <a href="{{ path('addRequest') }}" class="calendar__button">+</a>
         </section>
     </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+    <script>
+        $(document).ready(function () {
+            $('#dataTable').DataTable({
+                "paging": true,
+                "searching": false
+            });
+            $('.dataTables_length').addClass('bs-select');
+            $("#jsSend").click(function () {
+                Swal.fire({
+                    title: 'Etes vous sur?',
+                    text: "Une demande sera faite aupres du directeur de l'autoécole",
+                    type: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#054491',
+                    cancelButtonColor: '#b20000',
+                    confirmButtonText: "Oui"
+                }).then((result) => {
+                    if (result.value) {
+                        Swal.fire(
+                            'Demande envoyée!',
+                            '',
+                            'success'
+                        )
+                        $.ajax({
+                            url: Routing.generate('candidate_exam', {type: $(this).data('type') }),
+                            success: function(data){
+                                if (data === 'ok') {
+                                    console.log('ok');
+                                }
+                            }
+                        });
+                    }
+                })
+            });
+
+        });
+    </script>
 
 {% endblock %}

@@ -21,7 +21,7 @@ class Lesson
     /**
      * @var \DateTime
      * @Assert\GreaterThan("now")
-     * @AssertB\CheckDateTime
+     * @AssertB\CheckDatetime
      * @ORM\Column(type="datetime")
      *
      */

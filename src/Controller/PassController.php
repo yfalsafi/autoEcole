@@ -11,7 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class PassController extends AbstractController
 {
     /**
-     * @Route("/candidate/pass", name="pass")
+     * @Route("/candidate/pass", name="candidate_code_history")
      */
     public function index()
     {
@@ -19,8 +19,7 @@ class PassController extends AbstractController
         $pass = $repo->findBy([
             'user' => $this->getUser()
         ]);
-        $exam = false;
-        if(sizeof($pass)>10){
+        if(sizeof($pass)>=10){
             $exam = true;
         }else{
             $exam = false;

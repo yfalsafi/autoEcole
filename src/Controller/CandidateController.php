@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Candidate;
 use App\Entity\Instructor;
+use App\Entity\Package;
 use App\Entity\Planning;
 use App\Entity\User;
 use App\Repository\CandidateRepository;
@@ -29,25 +30,21 @@ class CandidateController extends AbstractController
      */
     public function index()
     {
-        $repo = $this->getDoctrine()->getRepository(Candidate::class);
-        $user = $this->getUser();
-        //$candidate=$repo->findOneByIdCandidate($user->getId());
-        dump($this->getUser());
-
+        $repo = $this->getDoctrine()->getRepository(Package::class);
+        $packages = $repo->findAll();
 
         return $this->render('candidate/index.html.twig', [
+            'packages' => $packages
         ]);
     }
-//    /**
-//     * @Route("/candidate", name="candidate")
-//     */
-//    public function index()
-//    {
-//        return $this->render('candidate/index.html.twig', [
-//            'controller_name' => 'CandidateController',
-//        ]);
-//    }
 
+    /**
+     * @Route("/test", name="test")
+     */
+    public function test()
+    {
+        return $this->json(['data' => ['titi', 'tutu']]);
+    }
 
     /**
      * @Route("/signin", name="signin")
@@ -67,10 +64,11 @@ class CandidateController extends AbstractController
         $nbHoursCandidate = array();
         $nbHoursInstructor = array();
         $repo = $this->getDoctrine()->getRepository(Candidate::class);
+        $repoUser = $this->getDoctrine()->getRepository(User::class);
         for ($month = 1; $month <= 12; $month++) {
             $start = date($id . '-' . $month . '-01');
             $end = date($id . '-' . $month . '-31');
-            $results[$month] = $repo->findAllByYear($start, $end);
+            $results[$month] = $repoUser->findAllByYear($start, $end);
         }
         $rep = $this->getDoctrine()->getRepository(Planning::class);
         $repI = $this->getDoctrine()->getRepository(Instructor::class);

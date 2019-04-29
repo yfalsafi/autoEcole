@@ -5,13 +5,13 @@
 {% block body %}
 <section>
     <div class="container">
-        <div class="row ">
+        <div class="row ml-5">
 
 
-            <div class="col-md-7 ">
+            <div class="col-md-7">
 
                 <div class="panel panel-default">
-                    <div class="panel-heading text-center">  <h4 > Profile</h4></div>
+                    <div class="panel-heading text-center">  <h4 > Mon profil</h4></div>
                     <div class="panel-body">
 
                         <div class="box box-info">
@@ -19,10 +19,6 @@
                             <div class="box-body">
                                 <div class="col-sm-12 ">
                                     <div  align="center"> <img alt="User Pic" src="https://x1.xingassets.com/assets/frontend_minified/img/users/nobody_m.original.jpg" id="profile-image1" class="img-circle img-responsive ">
-
-                                        <input id="profile-image-upload" class="hidden" type="file">
-                                        <div style="color:#999;" >click here to change profile image</div>
-                                        <!--Upload Image Js And Css-->
 
                                     </div>
 
@@ -32,17 +28,23 @@
                                 </div>
                                 <div class="col-sm-12 text-center">
                                     <h4 style="color:#054491;">{{ user.username }} </h4></span>
-                                    <span><p>{{ user.status }}</p></span>
+                                    {% if app.user.isinstructor %}
+                                        <span><p>Instructor</p></span>
+                                    {% elseif app.user.isadmin %}
+                                        <span><p>Admin</p></span>
+                                    {% else %}
+                                        <span><p>{{ user.status }}</p></span>
+                                    {% endif %}
                                 </div>
                                 <div class="clearfix"></div>
                                 <hr style="margin:5px 0 5px 0;">
 
 
-                                <div class="col-sm-5 col-xs-6 tital " >Name:</div><div class="col-sm-7 col-xs-6 ">{{ user.name }}</div>
+                                <div class="col-sm-5 col-xs-6 tital " >Nom:</div><div class="col-sm-7 col-xs-6 ">{{ user.name }}</div>
                                 <div class="clearfix"></div>
                                 <div class="bot-border"></div>
 
-                                <div class="col-sm-5 col-xs-6 tital " >First Name:</div><div class="col-sm-7"> {{ user.firstName }}</div>
+                                <div class="col-sm-5 col-xs-6 tital " >Prenom:</div><div class="col-sm-7"> {{ user.firstName }}</div>
                                 <div class="clearfix"></div>
                                 <div class="bot-border"></div>
 
@@ -50,29 +52,28 @@
                                 <div class="clearfix"></div>
                                 <div class="bot-border"></div>
 
-                                <div class="col-sm-5 col-xs-6 tital " >Date Of Joining:</div><div class="col-sm-7">{{ user.registerAt |date('d-m-Y')}}</div>
+                                <div class="col-sm-5 col-xs-6 tital " >Date d'inscription:</div><div class="col-sm-7">{{ user.registerAt |date('d-m-Y')}}</div>
 
                                 <div class="clearfix"></div>
                                 <div class="bot-border"></div>
 
-                                <div class="col-sm-5 col-xs-6 tital " >Date Of Birth:</div><div class="col-sm-7">{{ user.birth|date('Y-m-d') }}</div>
+                                <div class="col-sm-5 col-xs-6 tital " >Date de naissance:</div><div class="col-sm-7">{{ user.birth|date('Y-m-d') }}</div>
 
                                 <div class="clearfix"></div>
                                 <div class="bot-border"></div>
 
-                                <div class="col-sm-5 col-xs-6 tital " >Address:</div><div class="col-sm-7">{{ user.address }}</div>
+                                <div class="col-sm-5 col-xs-6 tital " >Adresse:</div><div class="col-sm-7">{{ user.address }}</div>
 
                                 <div class="clearfix"></div>
                                 <div class="bot-border"></div>
 
-                                <div class="col-sm-5 col-xs-6 tital " >City:</div><div class="col-sm-7">{{ user.city }}</div>
+                                <div class="col-sm-5 col-xs-6 tital " >Ville:</div><div class="col-sm-7">{{ user.city }}</div>
+                                {% if app.user.isinstructor == false and app.user.isadmin == false and app.user.status == 'driving'%}
+                                    <div class="clearfix"></div>
+                                    <div class="bot-border"></div>
 
-                                <div class="clearfix"></div>
-                                <div class="bot-border"></div>
-
-                                <div class="col-sm-5 col-xs-6 tital " >Relition:</div><div class="col-sm-7">Hindu</div>
-
-
+                                    <div class="col-sm-5 col-xs-6 tital " >Hours Done:</div><div class="col-sm-7">{{ app.user.hoursdone }}</div>
+                                {% endif %}
                                 <!-- /.box-body -->
                             </div>
                             <!-- /.box -->

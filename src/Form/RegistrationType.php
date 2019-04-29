@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -31,11 +32,11 @@ class RegistrationType extends AbstractType
                 'second_options' => array('label' => 'form.password_confirmation'),
                 'invalid_message' => 'fos_user.password.mismatch',
             ))
-            ->add('name',null, array('label' => 'Name'))
-            ->add('firstName',null, array('label' => 'Firstname'))
-            ->add('birth',DateType::class)
-            ->add('address',null, array('label' => 'Address'))
-            ->add('city',null, array('label' => 'City'))
+            ->add('name',null, array('label' => 'Nom'))
+            ->add('firstName',null, array('label' => 'Prenom'))
+            ->add('birth',BirthdayType::class,['label' => 'Date de naissance'])
+            ->add('address',null, array('label' => 'Adresse'))
+            ->add('city',null, array('label' => 'Ville'))
         ;
     }
 

@@ -54,5 +54,4 @@ class SecurityController extends BaseController
         ]);
     }
 
-
 }

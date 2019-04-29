@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Car;
 use App\Entity\Purchase;
+use App\Entity\RequestExam;
 use App\Entity\User;
 use App\Service\candidateInformation;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -66,6 +67,19 @@ class AdminController extends AbstractController
 
         return $this->render('admin/car.html.twig', [
             'numbers' =>$cars
+        ]);
+    }
+
+    /**
+     * @Route("/admin/request", name="admin_request")
+     */
+    public function adminRequest()
+    {
+        $rep = $this->getDoctrine()->getRepository(RequestExam::class);
+        $requests = $rep->findAll();
+
+        return $this->render('admin/request.html.twig', [
+            'requests'=>$requests,
         ]);
     }
 }

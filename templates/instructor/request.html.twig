@@ -5,14 +5,14 @@
 {% block body %}
 <section>
     <div class="container">
-        <table cellpadding="12">
+        <table id="dataTable" class="table table-striped table-bordered table-sm" cellpadding="12">
             <thead class="thead-dark">
                 <tr>
-                    <th scope="col">Candidate</th>
+                    <th scope="col">Candidat</th>
                     <th class="mr-4" scope="col">Date</th>
-                    <th class="mr-4" scope="col">Starting Hour</th>
-                    <th class="mr-4" scope="col">Ending Hour</th>
-                    <th class="mr-4" scope="col">Answer</th>
+                    <th class="mr-4" scope="col">Debut</th>
+                    <th class="mr-4" scope="col">Fin</th>
+                    <th class="mr-4" scope="col">Demande</th>
                 </tr>
 
             </thead>
@@ -24,17 +24,17 @@
                         <td class="mr-4">{{ planning.idl.startAt|date('H:i')}} </td>
                         <td class="mr-4">{{ planning.idl.endAt|date('H:i')}} </td>
                         <td class="mr-4">
-                            {#{% if planning.idl.status == 'W'%}#}
+                            {% if planning.idl.status == 'W'%}
                                 <div class="jsForm">
-                                    <input type="radio" class="jsLessonStatus" name="p{{  planning.idl.id }}" value="A" {% if planning.idl.status == 'A' %} checked="checked" {% endif %} data-lesson="{{ planning.idl.id }}" />Accept
-                                    <input type="radio" class="jsLessonStatus" name="p{{  planning.idl.id }}" value="D"{% if planning.idl.status == 'D' %} checked="checked" {% endif %} data-lesson="{{ planning.idl.id }}" />Denied
-                                    <input type="radio" class="jsLessonStatus" name="p{{  planning.idl.id }}" value="W"{% if planning.idl.status == 'W' %} checked="checked" {% endif %} data-lesson="{{ planning.idl.id }}" />Pending
+                                    <input type="radio" class="jsLessonStatus" name="p{{  planning.idl.id }}" value="A" {% if planning.idl.status == 'A' %} checked="checked" {% endif %} data-lesson="{{ planning.idl.id }}" />Accepter
+                                    <input type="radio" class="jsLessonStatus" name="p{{  planning.idl.id }}" value="D"{% if planning.idl.status == 'D' %} checked="checked" {% endif %} data-lesson="{{ planning.idl.id }}" />Refuser
+                                    <input type="radio" class="jsLessonStatus" name="p{{  planning.idl.id }}" value="W"{% if planning.idl.status == 'W' %} checked="checked" {% endif %} data-lesson="{{ planning.idl.id }}" />En Attente
                                 </div>
-                            {#{% elseif planning.idl.status == 'A' %}#}
-                                {#<div>Accepted</div>#}
-                            {#{% else %}#}
-                                {#<div>Denied</div>#}
-                            {#{% endif %}#}
+                            {% elseif planning.idl.status == 'A' %}
+                                <div>Accepté</div>
+                            {% else %}
+                                <div>Refusé</div>
+                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}
@@ -52,18 +52,39 @@
 
     <script>
         $( document ).ready(function() {
+            $('#dataTable').DataTable({
+                "paging": true ,// false to disable pagination (or any other option)
+                "searching": false
+            });
+            $('.dataTables_length').addClass('bs-select');
             $(".jsLessonStatus").click(function () {
-                $.ajax({
-                    url: Routing.generate('update_status', {id: $(this).data('lesson'), status: $(this).val()}),
-                    success: function(result){
-                        console.log(result);
-                       if (result === 'ok') {
-                           // $('.jsForm').remove();
-                       }
+                Swal.fire({
+                    title: 'Etes vous sur?',
+                    text: "Vous ne pourrez plus modifier la reponse",
+                    type: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#054491',
+                    cancelButtonColor: '#b20000',
+                    confirmButtonText: "Oui"
+                }).then((result) => {
+                    if (result.value) {
+                        Swal.fire(
+                            'Enregisté!',
+                            '',
+                            'success'
+                        )
+                    $.ajax({
+                        url: Routing.generate('update_status', {id: $(this).data('lesson'), status: $(this).val()}),
+                        success: function(result){
+                            console.log(result);
+                           if (result === 'ok') {
+                                $('.jsForm').remove();
+                           }
+                        }
+                        //$( "#result" ).load( "verify.asp" );
+                    });
                     }
-                    //$( "#result" ).load( "verify.asp" );
                 });
-
             });
         });
     </script>

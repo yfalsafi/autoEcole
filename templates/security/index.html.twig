@@ -3,19 +3,19 @@
 {% block body %}
     <div class="container">
         <section id="services">
-            <h1>Registration</h1>
+            <h1>Inscription</h1>
 
             {{ form_start(form) }}
-            {{ form_row(form.mail, { 'label': 'Mail',  'attr': {
-                'placeholder': 'Mail','class':'form-control'}}) }}
-            {{ form_row(form.password , { 'label': 'Password', 'attr': {
+            {{ form_row(form.mail, { 'label': 'Email',  'attr': {
+                'placeholder': 'Email','class':'form-control'}}) }}
+            {{ form_row(form.password , { 'label': 'Mot de passe', 'attr': {
                 'class':'form-control',
-                'placeholder': 'Password'}}) }}
-            {{ form_row(form.confirm_password, { 'label': 'Confirm Password', 'attr': {
+                'placeholder': 'Mot de passe'}}) }}
+            {{ form_row(form.confirm_password, { 'label': 'Confirmation Mot de passe', 'attr': {
                 'class':'form-control',
-                'placeholder': 'Confirm Password'}}) }}
+                'placeholder': 'Confirmation Mot de passe'}}) }}
             <br/>
-            <button type="submit"class="btn btn-primary">Registration</button>
+            <button type="submit"class="btn btn-primary">Inscription</button>
             {{ form_end(form) }}
         </section>
     </div>

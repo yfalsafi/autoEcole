@@ -1,6 +1,12 @@
-{% extends 'base.html.twig' %}
+{#{% extends 'base.html.twig' %}#}
 
-{% block title %}Code online{% endblock %}
+
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/agency.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/sb-admin.min.css') }}">
+{% endblock %}
 
 {% block body %}
 <section>
@@ -18,14 +24,14 @@
                         <div class="checkbox"><label><input type="checkbox" value="D" data-code="{{ codes[0].id }}">D: {{ codes[0].d }}</label></div>
                     {% endif %}
                 </div>
-                <button type="submit" id="jsSend" class="btn btn-primary">Submit</button>
+                <button type="submit" id="jsSend" class="btn btn-primary">Valider</button>
             </div>
 
     </div>
 </section>
 {% endblock %}
     {% block javascripts %}
-        {{ parent() }}
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
         <script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
         <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
@@ -68,7 +74,7 @@
                                 $('.response').html('');
                                 $('#jsSend').html('');
                                 console.log($('#jsSend'));
-                                $('#jsSend').append('<a class="btn btn-primary" href="{{ path('home') }}">Home</a>' );
+                                $('#jsSend').append('<a class="btn btn-primary" href="{{ path('candidate_code_history') }}">Historique</a>' );
                                 console.log($('#jsSend'));
                             }
 

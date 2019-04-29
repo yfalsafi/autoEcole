@@ -1,11 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{% if editMode %}Edit Lesson {% else %}New Lesson{% endif %}{% endblock %}
+{% block title %}{% if editMode %}Modification {% else %}Nouvelle Leçon{% endif %}{% endblock %}
 
 {% block body %}
     <div class="container">
         <section id="services">
-            <h1>{% if editMode %}Edit Lesson {% else %}New Lesson{% endif %}</h1>
+            <h1>{% if editMode %}Modification {% else %}Nouvelle Leçon{% endif %}</h1>
             {{ form_start(form) }}
 
                 {% if form_errors(form) %}
@@ -14,17 +14,17 @@
                     </div>
                 {% endif %}
 
-                {{ form_row(form.startAt, { 'label': 'Start',  'attr': {
+                {{ form_row(form.startAt, { 'label': 'Debut',  'attr': {
                     'class':'input-group date'}}) }}
-                {{ form_row(form.endAt , { 'label': 'End', 'attr': {
+                {{ form_row(form.endAt , { 'label': 'Fin', 'attr': {
                     'class':'input-group date'}}) }}
                 <br/>
                 {% if not editMode %}
-                <button type="submit" class="btn btn-primary">Add</button>
+                <button type="submit" class="btn btn-primary">Demander</button>
                 {% else %}
                     {%if date("now")|date('Y-m-d') < lesson.startAt|date('Y-m-d')  %}
-                        <button type="submit" class="btn btn-primary">Modify</button>
-                        <a href="{{ path('deleteLesson',{'id':lesson.id}) }}" class="btn btn-danger">Delete</a>
+                        <button type="submit" class="btn btn-primary">Modifier</button>
+                        <a href="{{ path('deleteLesson',{'id':lesson.id}) }}" class="btn btn-danger">Supprimer</a>
                     {% endif %}
                 {% endif %}
             {{ form_end(form) }}
