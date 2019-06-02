@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use JMS\Serializer\Annotation as Serializer;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -19,17 +20,20 @@ class Planning
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="planningsC")
      * @ORM\JoinColumn(nullable=false)
+     * @Serializer\Groups({"planning"})
      */
     private $idc;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="planningsI")
      * @ORM\JoinColumn(nullable=false)
+     * @Serializer\Groups({"planning"})
      */
     private $idi;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Lesson")
+     * @Serializer\Groups({"planning"})
      */
     private $idl;
 

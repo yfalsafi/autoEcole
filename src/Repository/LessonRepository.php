@@ -99,6 +99,23 @@ class LessonRepository extends ServiceEntityRepository
             ;
     }
 
+    public function findHoursDoneByInstructor($user,$month)
+    {
+        return $this->createQueryBuilder('l')
+            ->join('p.idl', 'p')
+            ->addSelect('p')
+            ->andWhere('p.idl = l.id')
+            ->leftJoin('p.idi', 'i')
+            ->addSelect('i')
+            ->andWhere('MONTH(l.startAt) = (:start)')
+            ->andWhere('p.idi = :user')
+            ->setParameter('user', $user)
+            ->setParameter('start', $month)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
     // /**
     //  * @return Users[] Returns an array of Users objects
     //  */

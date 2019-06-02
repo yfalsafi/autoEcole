@@ -1,0 +1,28 @@
+{% block body %}
+
+
+    <h1 align="center">Commandes</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Article</th>
+                <th>Quantité</th>
+                <th>Prix</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for produit in produits %}
+            {% set a =  produit.package.price * produit.quantity%}
+            <tr>
+                <td>{{ produit.package.title }}</td>
+                <td>{{ produit.quantity }}</td>
+                <td>{{ produit.package.price }}</td>
+                <td>{{ a }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

@@ -31,9 +31,10 @@ class RegistrationType extends AbstractType
                 'first_options' => array('label' => 'form.password'),
                 'second_options' => array('label' => 'form.password_confirmation'),
                 'invalid_message' => 'fos_user.password.mismatch',
+
             ))
-            ->add('name',null, array('label' => 'Nom'))
-            ->add('firstName',null, array('label' => 'Prenom'))
+            ->add('name',null, array('label' => 'Nom','attr' => ['pattern' => '[a-zA-Z]*']))
+            ->add('firstName',null, array('label' => 'Prenom','attr' => ['pattern' => '[a-zA-Z]*']))
             ->add('birth',BirthdayType::class,['label' => 'Date de naissance'])
             ->add('address',null, array('label' => 'Adresse'))
             ->add('city',null, array('label' => 'Ville'))

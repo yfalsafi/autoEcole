@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PassRepository")
@@ -24,6 +25,7 @@ class Pass
 
     /**
      * @ORM\Column(type="datetime")
+     * @Serializer\Groups({"user"})
      */
     private $passAt;
 

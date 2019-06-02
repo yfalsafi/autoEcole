@@ -65,6 +65,20 @@ class PurchaseRepository extends ServiceEntityRepository
             ;
     }
 
+     public function findByUserJoinPackage($user)
+        {
+            return $this->createQueryBuilder('p')
+                ->join('p.package', 'pa')
+                ->addSelect('pa')
+                ->join('p.user','user')
+                ->addSelect('user')
+                ->andWhere('p.user = :user')
+                ->setParameter('user', $user)
+                ->getQuery()
+                ->getResult()
+                ;
+        }
+
 
 
 

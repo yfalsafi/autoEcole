@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Car;
 use App\Entity\Lesson;
 use App\Entity\Planning;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -118,6 +119,7 @@ class LessonController extends AbstractController
         // Changer le status de la lesson
         // $request->query->get('status')
         $repo = $this->getDoctrine()->getRepository(Lesson::class);
+        $repoCar = $this->getDoctrine()->getRepository(Car::class);
         $lesson = $repo->findOneBy([
             'id' => $id
         ]);
@@ -131,7 +133,22 @@ class LessonController extends AbstractController
             $planning->getIdc()->setHoursLeft($planning->getIdc()->getHoursLeft() - $hours->format('%H'));
             $user = $planning->getIdc();
             $user->setHoursDone($user->getHoursDone() + $hours->format('%H'));
+            $instructor = $this->getUser();
+            $car = $repoCar->findOneBy(["instructor"=>$instructor,"isAvailable" => true]);
+            if($car->getKmUsed() > Lesson::MAXKMUSED)
+            {
+                $car->setIsAvailable(false);
+                $manager->persist($car);
+                $manager->flush();
+                return $this->json(["error" => 'Erreur, La voiture a trop de kilometres'], 400);
+            }
+            else{
+                $new = $car->getKilometer() + Lesson::DRIVEHOUR * $hours->format('%H');
+                dump($new);
+                $car->setKilometer($new);
+            }
             $manager->persist($user);
+            $manager->persist($car);
         }
 
         $lesson->setStatus($request->query->get('status'));

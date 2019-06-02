@@ -9,6 +9,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use FOS\UserBundle\Model\User as BaseUser;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * Users
@@ -22,41 +23,54 @@ class User extends BaseUser
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Serializer\Groups({"user"})
      */
     protected $id;
 
     /**
+     * @Assert\Regex(pattern="/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d{2,}).{6,}$/i", message="New password is required to be minimum 6 chars in length and to include at least one letter and one number.")
+    */
+    protected $plainPassword;
+
+    /**
      * @ORM\Column(type="string", length=255)
+     * @Serializer\Groups({"car","user", "planning"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Serializer\Groups({"car","user","planning"})
      */
     private $firstName;
 
     /**
      * @ORM\Column(type="date")
+     * @Serializer\Groups({"user"})
      */
     private $birth;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Serializer\Groups({"user"})
      */
     private $address;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Serializer\Groups({"user"})
      */
     private $city;
 
     /**
      * @ORM\Column(type="string", length=10, nullable=true)
+     * @Serializer\Groups({"user"})
      */
     private $status;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Serializer\Groups({"user"})
      */
     private $registerAt;
 
@@ -64,12 +78,13 @@ class User extends BaseUser
      * @var User
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="id")
      * @ORM\JoinColumn(name="instructor", referencedColumnName="id")
-     *
+     * @Serializer\Groups({"user"})
      */
     private $instructor;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
+     * @Serializer\Groups({"user"})
      */
     private $isInstructor;
 
@@ -85,28 +100,39 @@ class User extends BaseUser
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Purchase", mappedBy="user", orphanRemoval=true)
+     * @Serializer\Groups({"user"})
      */
     private $purchases;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Serializer\Groups({"user"})
      */
     private $hoursDone;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Serializer\Groups({"user"})
      */
     private $hoursLeft;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
+     * @Serializer\Groups({"user"})
      */
     private $IsAdmin;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Pass", mappedBy="user", orphanRemoval=true)
+     * @Serializer\Groups({"user"})
      */
     private $passes;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Car", mappedBy="instructor")
+     * @Serializer\Groups({"user"})
+     */
+    private $cars;
 
 
 
@@ -118,6 +144,7 @@ class User extends BaseUser
         $this->planningsI = new ArrayCollection();
         $this->purchases = new ArrayCollection();
         $this->passes = new ArrayCollection();
+        $this->cars = new ArrayCollection();
         // your own logic
     }
 
@@ -383,6 +410,37 @@ class User extends BaseUser
             // set the owning side to null (unless already changed)
             if ($pass->getUser() === $this) {
                 $pass->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Car[]
+     */
+    public function getCars(): Collection
+    {
+        return $this->cars;
+    }
+
+    public function addCar(Car $car): self
+    {
+        if (!$this->cars->contains($car)) {
+            $this->cars[] = $car;
+            $car->setInstructor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCar(Car $car): self
+    {
+        if ($this->cars->contains($car)) {
+            $this->cars->removeElement($car);
+            // set the owning side to null (unless already changed)
+            if ($car->getInstructor() === $this) {
+                $car->setInstructor(null);
             }
         }
 

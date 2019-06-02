@@ -5,12 +5,16 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Validator\Constraints as AssertB;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\LessonRepository")
  */
 class Lesson
 {
+
+    const DRIVEHOUR = 15;
+    const MAXKMUSED = 50000;
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -23,6 +27,7 @@ class Lesson
      * @Assert\GreaterThan("now")
      * @AssertB\CheckDatetime
      * @ORM\Column(type="datetime")
+     * @Serializer\Groups({"planning"})
      *
      */
     private $startAt;
@@ -34,11 +39,13 @@ class Lesson
      *     message="The End start before or at the same time that the Start"
      * )
      * @ORM\Column(type="datetime")
+     * @Serializer\Groups({"planning"})
      */
     private $endAt;
 
     /**
      * @ORM\Column(type="string", length=1, nullable=false, options={"fixed"=true})
+     * @Serializer\Groups({"planning"})
      */
     private $status;
 

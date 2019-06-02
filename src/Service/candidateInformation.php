@@ -8,6 +8,7 @@
 namespace App\Service;
 
 use App\Entity\Car;
+use App\Entity\Planning;
 use App\Entity\Purchase;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
@@ -43,12 +44,26 @@ class candidateInformation
     public function getInstructorsInformation()
     {
         $repoUser = $this->doctrine->getRepository(User::class);
+        $repoPlanning = $this->doctrine->getRepository(Planning::class);
 
 
         $numbers['nbInstructor'] = $repoUser->countInstructor();
         $numbers['instructors'] = $repoUser->findBy([ 'isInstructor' => true]);
+        $repoPurchase = $this->doctrine->getRepository(Purchase::class);
+        foreach ($numbers['instructors'] as $i=>$instructor){
+            $test[$instructor->getId()] = $repoPlanning->findHoursDoneByInstructor($instructor, date('m') );
+            $a=0;
+            foreach ($test[$instructor->getId()] as $planning){
+
+                $a += $planning->getIdl()->getEndAt()->getTimeStamp() - $planning->getIdl()->getStartAt()->getTimeStamp();
+
+            }
+            $a = new \DateTime("@$a");
+            $numbers[$instructor->getId()] = $a->format("H");
+        }
 
 
+        $numbers['turnoverByInstructor'] = $repoPurchase->findTurnOverByInstructorAndMonth(new \DateTime());
 
         return $numbers;
     }
@@ -67,7 +82,6 @@ class candidateInformation
     {
         $repoPurchase = $this->doctrine->getRepository(Purchase::class);
 
-        $numbers['turnoverByInstructor'] = $repoPurchase->findTurnOverByInstructorAndMonth(new \DateTime());
         for($i=4;$i>=0;$i--)
         {
             $numbers['turnoverByMonth'][$i] = $repoPurchase->findTurnOverByMonth(new \DateTime(sprintf('-%d months',$i)));

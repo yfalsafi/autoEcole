@@ -29,7 +29,7 @@
                                     <td>{{ instructor.email }}</td>
                                     <td>{{ instructor.address }} {{ instructor.city }}</td>
                                     <td>{{ instructor.registerAt|date('d-m-Y') }}</td>
-                                    <td>{{ instructor.hoursDone }}</td>
+                                    <td> {{ numbers[instructor.id] }}</td>
                                     <td>
                                         {% for money in numbers.turnoverByInstructor %}
                                             {% if money.name == instructor.name %}

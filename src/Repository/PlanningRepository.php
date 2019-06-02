@@ -149,6 +149,24 @@ class PlanningRepository extends ServiceEntityRepository
             ;
     }
 
+    public function findHoursDoneByInstructor($user,$month)
+    {
+        return $this->createQueryBuilder('p')
+            ->select('p')
+            ->join('p.idl', 'l')
+            ->addSelect('l')
+            ->andWhere('p.idl = l.id')
+            ->leftJoin('p.idi', 'i')
+            ->addSelect('i')
+            ->andWhere('MONTH(l.startAt) = (:start)')
+            ->andWhere('p.idi = :user')
+            ->setParameter('user', $user)
+            ->setParameter('start', $month)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
 
     // /**
     //  * @return Users[] Returns an array of Users objects

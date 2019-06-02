@@ -8,3 +8,14 @@ POST http://localhost:8000/test
 }
 
 ###
+POST http://192.168.45.98:8888/api/user
+Content-Type: application/json
+{
+   "username" : "zacharie.millet",
+   "password" : ""
+
+}
+
+###
+
+

@@ -68,9 +68,15 @@
                         <li class="nav-item">
                             <a class="nav-link js-scroll-trigger" href="{{ path('package') }}">Formation</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link js-scroll-trigger" href="{{ path('user_account') }}">Mon compte</a>
-                        </li>
+                        <div class="dropdown">
+                            <button class="dropbtn">Mon compte
+                                <i class="fa fa-caret-down"></i>
+                            </button>
+                            <div class="dropdown-content">
+                                <a href="{{ path('user_account') }}">Mes infos</a>
+                                <a href="{{ path('candidate_history') }}">Historique d'achats</a>
+                            </div>
+                        </div>
                         {% if(app.user.status == 'driving') %}
                             <li class="nav-item">
                                 <a class="nav-link js-scroll-trigger" href="{{ path('planning') }}">Planning</a>
