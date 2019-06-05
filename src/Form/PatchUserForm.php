@@ -24,11 +24,16 @@ class PatchUserForm extends AbstractType
         $builder
             ->add('email', EmailType::class, array('label' => 'form.email', 'translation_domain' => 'FOSUserBundle'))
             ->add('username', null, array('label' => 'form.username', 'translation_domain' => 'FOSUserBundle'))
-            ->add('password', null, array('label' => 'Password'))
             ->add('name',null, array('label' => 'Nom','attr' => ['pattern' => '[a-zA-Z]*']))
             ->add('firstName',null, array('label' => 'Prenom','attr' => ['pattern' => '[a-zA-Z]*']))
             ->add('address',null, array('label' => 'Adresse'))
             ->add('city',null, array('label' => 'Ville'))
+            ->add('status',ChoiceType::class, [
+                'choices' => [
+                    'Code' => "code",
+                    'Conduite' => "driving"
+                ],'multiple'=>false
+            ])
             ->add('enabled',ChoiceType::class, [
                 'choices' => [
                     'Oui' => true,
@@ -50,6 +55,7 @@ class PatchUserForm extends AbstractType
         $resolver->setDefaults([
             'csrf_protection'   => false,
             'data_class' => User::class,
+            'allow_extra_fields'=> true,
         ]);
     }
 }

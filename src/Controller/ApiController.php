@@ -62,19 +62,26 @@ class ApiController extends AbstractController
         $repo = $this->getDoctrine()->getRepository(User::class);
         $candidate = $repo->findOneBy(["id" => $id]);
         if(empty($candidate)){
-            $message = "Candidat inexistante";
+            $message = "Voiture inexistante";
             throw new ResourceValidationException($message);
         }
-        dd($candidate);
-        $form = $this->createForm(PatchUserForm::class,$candidate);
-        $form->submit($request->request->all(), false);
-        if($form->isValid()){
-            $manager->persist($candidate);
-            $manager->flush();
-            return $candidate;
-        }else{
-            return $form;
+        $form = $this->createForm( PatchUserForm::class, $candidate);
+
+        $data = json_decode($request->getContent(),true);
+
+        if ($data['is_instructor'] === true ) {
+            $data['isInstructor'] = 1;
+        } else {
+            $data['isInstructor'] = 0;
         }
+        $data['firstName'] =  $data['first_name'];
+        //dump($car);die;
+        $form->submit($data);
+        //if($form->isValid()){
+        $manager->persist($candidate);
+        $manager->flush();
+
+        return $candidate;
     }
 
 
@@ -221,83 +228,5 @@ class ApiController extends AbstractController
 
     }
 
-    /**
-     * @Rest\Post("api/admin", name = "app_user_check")
-     * @Rest\View(StatusCode = 201)
-     * @ParamConverter("user", converter="fos_rest.request_body")
-     */
-    public function createAction(User $user, ConstraintViolationList $violations, EncoderFactoryInterface $factory)
-    {
-        $repo = $this->getDoctrine()->getRepository(User::class);
-        if(count($violations)){
-            $message ="The JSON sent contains invalid data. Here are the errors you need to correct :";
 
-            foreach ($violations as $violation) {
-                $message .= sprintf("Field %s: %s ", $violation->getPropertyPath(), $violation->getMessage());
-            }
-
-            throw new ResourceValidationException($message);
-        }
-
-        $userDB = $repo->findOneBy([ "username" => $user->getUsername(), "IsAdmin"=> true ]);
-        $notAdmin = $repo->findOneBy([ "username" => $user->getUsername(), "IsAdmin"=> false ]);
-        if($notAdmin){
-            $message = "Vous n'avez pas les droits necessaires";
-            throw new ResourceValidationException($message);
-        }
-        else if($userDB == ""){
-            $message = "username ou password incorrect";
-            throw new ResourceValidationException($message);
-        }
-
-        $encoder = $factory->getEncoder($userDB);
-
-        $bool = ($encoder->isPasswordValid($userDB->getPassword(), $user->getPassword(), $userDB->getSalt()));
-        if ($bool){
-            return $userDB;
-        }else{
-            $message =  "Le username ou le password est incorrect";
-            throw new ResourceValidationException($message);
-        }
-
-
-    }
-
-
-    /**
-     * @Rest\Post("api/login_check", name = "app_user_check")
-     * @Rest\View(StatusCode = 201)
-     * @ParamConverter("user", converter="fos_rest.request_body")
-     */
-    public function aaaaa()
-    {
-//        $repo = $this->getDoctrine()->getRepository(User::class);
-//        if(count($violations)){
-//            $message ="The JSON sent contains invalid data. Here are the errors you need to correct :";
-//
-//            foreach ($violations as $violation) {
-//                $message .= sprintf("Field %s: %s ", $violation->getPropertyPath(), $violation->getMessage());
-//            }
-//
-//            throw new ResourceValidationException($message);
-//        }
-//
-//        $userDB = $repo->findOneBy([ "username" => $user->getUsername(), "IsAdmin"=> true ]);
-//        if($userDB == ""){
-//            $message = "Vous n'avez pas les droits necessaires";
-//            throw new ResourceValidationException($message);
-//        }
-//
-//        $encoder = $factory->getEncoder($userDB);
-//
-//        $bool = ($encoder->isPasswordValid($userDB->getPassword(), $user->getPassword(), $userDB->getSalt()));
-//        if ($bool){
-//            return $userDB;
-//        }else{
-//            $message =  "Le username ou le password est incorrect";
-//            throw new ResourceValidationException($message);
-//        }
-
-
-    }
 }
