@@ -45,7 +45,7 @@ class User extends BaseUser
     private $firstName;
 
     /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="date", nullable=true)
      * @Serializer\Groups({"user"})
      */
     private $birth;
@@ -69,7 +69,7 @@ class User extends BaseUser
     private $status;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      * @Serializer\Groups({"user"})
      */
     private $registerAt;

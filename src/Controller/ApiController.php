@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Car;
 use App\Entity\User;
 use App\Form\CarType;
+use App\Form\PatchUserForm;
 use App\Form\RegistrationType;
 use Doctrine\Common\Persistence\ObjectManager;
 use JMS\Serializer\SerializationContext;
@@ -17,6 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Validator\ConstraintViolationList;
 use App\Exception\ResourceValidationException;
@@ -37,23 +39,39 @@ class ApiController extends AbstractController
     }
 
     /**
-     * @Rest\Patch("api/candidate/{id}", name = "app_candidate_update")
+     * @Rest\Delete("/api/delete/user/{id}", name="delete_user")
+     * @Rest\View(StatusCode = Response::HTTP_NO_CONTENT)
+     */
+    public function deleteCandidates($id, ObjectManager $manager)
+    {
+        $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(
+            ["id" => $id]
+        );
+
+        $manager->remove($user);
+        $manager->flush();
+
+    }
+
+    /**
+     * @Rest\Patch("api/user/{id}", name = "app_candidate_update")
      * @Rest\View(StatusCode = 202)
      */
     public function updateCandidate ($id, Request $request, ObjectManager $manager)
     {
         $repo = $this->getDoctrine()->getRepository(User::class);
-        $car = $repo->findOneBy(["id" => $id]);
-        if(empty($car)){
+        $candidate = $repo->findOneBy(["id" => $id]);
+        if(empty($candidate)){
             $message = "Candidat inexistante";
             throw new ResourceValidationException($message);
         }
-        $form = $this->createForm(RegistrationType::class,$car);
+        dd($candidate);
+        $form = $this->createForm(PatchUserForm::class,$candidate);
         $form->submit($request->request->all(), false);
         if($form->isValid()){
-            $manager->persist($car);
+            $manager->persist($candidate);
             $manager->flush();
-            return $car;
+            return $candidate;
         }else{
             return $form;
         }
@@ -71,6 +89,30 @@ class ApiController extends AbstractController
         );
 
         return $instructors;
+    }
+
+    /**
+     * @Rest\Post("api/instructor", name = "app_instructor_create")
+     * @Rest\View(StatusCode = 201)
+     * @ParamConverter("instructor", converter="fos_rest.request_body")
+     */
+    public function addInstructor(User $instructor, ConstraintViolationList $violations, ObjectManager $manager, UserPasswordEncoderInterface $encode)
+    {
+        if(count($violations)){
+            $message ="The JSON sent contains invalid data. Here are the errors you need to correct :";
+
+            foreach ($violations as $violation) {
+                $message .= sprintf("Field %s: %s ", $violation->getPropertyPath(), $violation->getMessage());
+            }
+
+            throw new ResourceValidationException($message);
+        }
+        $instructor->setPassword($encode->encodePassword($instructor, $instructor->getPassword()));
+        $manager->persist($instructor);
+        $manager->flush();
+
+        return $instructor;
+
     }
 
     /**
@@ -101,7 +143,7 @@ class ApiController extends AbstractController
      * @Rest\Get("/api/cars", name="get_all_car")
      * @Rest\View(StatusCode = 200, serializerGroups={"car"})
      */
-    public function getAllCar(SerializerInterface $serializer)
+    public function getAllCar()
     {
         $cars = $this->getDoctrine()->getRepository(Car::class)->findAll();
         return $cars;
@@ -123,7 +165,6 @@ class ApiController extends AbstractController
 
             throw new ResourceValidationException($message);
         }
-
         $manager->persist($car);
         $manager->flush();
 
@@ -143,15 +184,41 @@ class ApiController extends AbstractController
             $message = "Voiture inexistante";
             throw new ResourceValidationException($message);
         }
-        $form = $this->createForm(CarType::class,$car);
-        $form->submit($request->request->all(), false);
-        if($form->isValid()){
+        $form = $this->createForm( CarType::class, $car);
+
+        $data = json_decode($request->getContent(),true);
+
+        if ($data['is_available'] === true ) {
+            $data['isAvailable'] = 1;
+        } else {
+            $data['isAvailable'] = 0;
+        }
+        //dump($data);die;
+        //dump($car);die;
+        $form->submit($data);
+        //if($form->isValid()){
             $manager->persist($car);
             $manager->flush();
+
             return $car;
-        }else{
-            return $form;
-        }
+        //}else{
+        //    return $form;
+        //}
+    }
+
+    /**
+     * @Rest\Delete("/api/delete/car/{id}", name="delete_car")
+     * @Rest\View(StatusCode = Response::HTTP_NO_CONTENT)
+     */
+    public function deleteCar($id, ObjectManager $manager)
+    {
+        $car = $this->getDoctrine()->getRepository(Car::class)->findOneBy(
+            ["id" => $id]
+        );
+
+        $manager->remove($car);
+        $manager->flush();
+
     }
 
     /**

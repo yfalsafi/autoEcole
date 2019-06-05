@@ -19,12 +19,6 @@ class Car
     private $id;
 
     /**
-     * @ORM\Column(type="datetime")
-     * @Serializer\Groups({"car"})
-     */
-    private $purchasedAt;
-
-    /**
      * @ORM\Column(type="boolean")
      * @Serializer\Groups({"car"})
      */
@@ -63,18 +57,6 @@ class Car
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getPurchasedAt(): ?\DateTimeInterface
-    {
-        return $this->purchasedAt;
-    }
-
-    public function setPurchasedAt(\DateTimeInterface $purchasedAt): self
-    {
-        $this->purchasedAt = $purchasedAt;
-
-        return $this;
     }
 
     public function getIsAvailable(): ?bool

@@ -25,7 +25,6 @@ class CarType extends AbstractType
             ->add('model', null, array('label' => 'form.username'))
             ->add('immatriculation',null, array('label' => 'Nom'))
             ->add('kilometer',IntegerType::class, array('label' => 'Kilometre'))
-            ->add('purchasedAt',DateType::class,['label' => 'Date de naissance'])
             ->add('isAvailable',ChoiceType::class, [
                 'choices' => [
                     'Disponible' => true,
@@ -41,7 +40,6 @@ class CarType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Car::class,
             'csrf_protection' => false,
-            'allow_extra_fields' => true
         ]);
     }
 }
